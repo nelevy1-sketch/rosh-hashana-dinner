@@ -136,18 +136,22 @@
               <input type="text" id="dietaryRestrictions" placeholder="למשל: צמחוני, ללא גלוטן, אלרגיה לאגוזים" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base">
             </div>
 
-            <!-- Alcohol & Soft Drinks -->
+            <!-- Alcohol & Soft Drinks (Exclusive Radios) -->
             <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
               <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">שתייה והעדפות 🍷</label>
-              <div class="space-y-2">
-                <label class="flex items-center gap-2 cursor-pointer text-base font-medium text-slate-700">
-                  <input type="checkbox" id="drinksAlcohol" checked class="w-5 h-5 text-amber-600 rounded">
-                  <span id="checkboxDrinksAlcohol">שותה אלכוהול</span>
+              <div class="grid grid-cols-2 gap-3">
+                <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
+                  <input type="radio" name="alcoholChoice" value="yes" checked onchange="toggleAlcoholChoice(true)" class="hidden">
+                  <span id="radioDrinksAlcohol" class="font-semibold text-sm">🍷 שותה אלכוהול</span>
+                </label>
+                <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
+                  <input type="radio" name="alcoholChoice" value="no" onchange="toggleAlcoholChoice(false)" class="hidden">
+                  <span id="radioNoAlcohol" class="font-semibold text-sm">🚫 לא שותה אלכוהול</span>
                 </label>
               </div>
 
-              <div id="nonAlcoholField" class="pt-2 border-t border-slate-200">
-                <label id="labelSoftDrink" class="block text-xs font-semibold text-slate-700 mb-1">אם לא שותים אלכוהול, איזה שתייה אחת תעדיפו?</label>
+              <div id="nonAlcoholField" class="pt-2 border-t border-slate-200 hidden">
+                <label id="labelSoftDrink" class="block text-xs font-semibold text-slate-700 mb-1">איזה שתייה קלה תעדיפו שנביא?</label>
                 <input type="text" id="softDrinkChoice" placeholder="למשל: זירו, סודה, מיץ..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base bg-white">
               </div>
             </div>
@@ -165,7 +169,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.5.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.6.0</span></span>
   </footer>
 
   <!-- Host Dashboard Modal -->
@@ -308,8 +312,9 @@
         labelDietary: 'הגבלות תזונה / אלרגיות (רשות)',
         dietaryPlaceholder: 'למשל: צמחוני, ללא גלוטן, אלרגיה לאגוזים',
         labelAlcoholSection: 'שתייה והעדפות 🍷',
-        checkboxDrinksAlcohol: 'שותה אלכוהול',
-        labelSoftDrink: 'אם לא שותים אלכוהול, איזה שתייה אחת תעדיפו?',
+        radioDrinksAlcohol: '🍷 שותה אלכוהול',
+        radioNoAlcohol: '🚫 לא שותה אלכוהול',
+        labelSoftDrink: 'איזה שתייה קלה תעדיפו שנביא?',
         softDrinkPlaceholder: 'למשל: זירו, סודה, מיץ...',
         btnSave: 'שמור אישור הגעה',
         btnSaveLoading: 'שומר...',
@@ -374,8 +379,9 @@
         labelDietary: 'Dietary restrictions / allergies (optional)',
         dietaryPlaceholder: 'e.g., Vegetarian, gluten-free, nut allergy',
         labelAlcoholSection: 'Drinks & Preferences 🍷',
-        checkboxDrinksAlcohol: 'Drinks alcohol',
-        labelSoftDrink: 'If non-alcoholic, which drink would you like?',
+        radioDrinksAlcohol: '🍷 Drinks alcohol',
+        radioNoAlcohol: '🚫 No alcohol',
+        labelSoftDrink: 'What non-alcoholic drink would you like us to bring?',
         softDrinkPlaceholder: 'e.g., Diet Coke, Sparkling Water, Juice...',
         btnSave: 'Save RSVP',
         btnSaveLoading: 'Saving...',
@@ -470,7 +476,8 @@
       document.getElementById('labelDietary').innerText = t.labelDietary;
       document.getElementById('dietaryRestrictions').placeholder = t.dietaryPlaceholder;
       document.getElementById('labelAlcoholSection').innerText = t.labelAlcoholSection;
-      document.getElementById('checkboxDrinksAlcohol').innerText = t.checkboxDrinksAlcohol;
+      document.getElementById('radioDrinksAlcohol').innerText = t.radioDrinksAlcohol;
+      document.getElementById('radioNoAlcohol').innerText = t.radioNoAlcohol;
       document.getElementById('labelSoftDrink').innerText = t.labelSoftDrink;
       document.getElementById('softDrinkChoice').placeholder = t.softDrinkPlaceholder;
       document.getElementById('btnSaveText').innerText = t.btnSave;
@@ -504,6 +511,18 @@
       document.querySelectorAll('.dish-desc-input').forEach(input => {
         input.placeholder = t.dishPlaceholder;
       });
+    }
+
+    function toggleAlcoholChoice(drinksAlcohol) {
+      const field = document.getElementById('nonAlcoholField');
+      const input = document.getElementById('softDrinkChoice');
+      if (drinksAlcohol) {
+        field.classList.add('hidden');
+        input.value = '';
+      } else {
+        field.classList.remove('hidden');
+        input.focus();
+      }
     }
 
     function setLoading(btn, textEl, isLoading, loadingText, normalText) {
@@ -648,9 +667,13 @@
 
           document.getElementById('dietaryRestrictions').value = data.dietary || '';
 
-          if (data.alcohol) {
-            document.getElementById('drinksAlcohol').checked = data.alcohol.drinksAlcohol;
+          if (data.alcohol && data.alcohol.drinksAlcohol === false) {
+            document.querySelector('input[name="alcoholChoice"][value="no"]').checked = true;
+            toggleAlcoholChoice(false);
             document.getElementById('softDrinkChoice').value = data.alcohol.preferredSoftDrink || '';
+          } else {
+            document.querySelector('input[name="alcoholChoice"][value="yes"]').checked = true;
+            toggleAlcoholChoice(true);
           }
         } else {
           lastLoadedUpdatedAt = null;
@@ -659,8 +682,8 @@
           document.querySelector('input[name="partySize"][value="1"]').checked = true;
           addDishRow();
           document.getElementById('dietaryRestrictions').value = '';
-          document.getElementById('drinksAlcohol').checked = true;
-          document.getElementById('softDrinkChoice').value = '';
+          document.querySelector('input[name="alcoholChoice"][value="yes"]').checked = true;
+          toggleAlcoholChoice(true);
         }
         updateLastUpdatedText();
       } catch (err) {
@@ -711,6 +734,7 @@
       const partySize = isAttending ? parseInt(document.querySelector('input[name="partySize"]:checked').value) : 0;
       const nowIso = new Date().toISOString();
       const dishesList = isAttending ? getDishesPayload() : [];
+      const drinksAlcohol = document.querySelector('input[name="alcoholChoice"]:checked').value === 'yes';
 
       const payload = {
         name: activeUser.name,
@@ -720,8 +744,8 @@
         dishes: dishesList,
         dietary: isAttending ? document.getElementById('dietaryRestrictions').value.trim() : '',
         alcohol: isAttending ? {
-          drinksAlcohol: document.getElementById('drinksAlcohol').checked,
-          preferredSoftDrink: document.getElementById('softDrinkChoice').value.trim()
+          drinksAlcohol: drinksAlcohol,
+          preferredSoftDrink: drinksAlcohol ? '' : document.getElementById('softDrinkChoice').value.trim()
         } : null,
         updatedAt: nowIso
       };
