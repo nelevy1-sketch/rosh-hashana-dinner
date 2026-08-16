@@ -11,127 +11,155 @@
     body {
       font-family: 'Assistant', 'Inter', sans-serif;
     }
+    .spinner {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255,255,255,0.5);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-inline-end: 0.4em;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col items-center p-4 md:p-8">
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col items-center justify-between p-4 md:p-8">
 
-  <!-- Header & Language Switcher -->
-  <header class="w-full max-w-xl flex flex-col items-center mb-6 gap-3 md:flex-row md:justify-between md:gap-0">
-    <div class="flex items-center gap-2 text-center md:text-right">
-      <span class="text-3xl">🍯🍎</span>
-      <h1 id="appTitle" class="text-xl md:text-2xl font-bold text-slate-800">ארוחת ראש השנה 2026</h1>
-    </div>
-    <div class="flex items-center gap-2 w-full justify-center md:w-auto md:justify-end">
-      <button id="langToggleBtn" onclick="toggleLanguage()" class="flex-1 md:flex-none px-4 py-1.5 bg-white border border-slate-300 rounded-full text-sm font-semibold shadow-sm hover:bg-slate-100 transition whitespace-nowrap">
-        English
-      </button>
-      <button onclick="openHostModal()" class="flex-1 md:flex-none px-4 py-1.5 bg-amber-500 text-white rounded-full text-sm font-semibold shadow-sm hover:bg-amber-600 transition whitespace-nowrap">
-        👑 <span id="hostBtnText">מארח</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Step 1: Login / Identifier Card -->
-  <main class="w-full max-w-xl bg-white rounded-2xl shadow-lg border border-slate-100 p-6 md:p-8">
-    <div id="authStep">
-      <h2 id="loginTitle" class="text-lg font-bold text-slate-900 mb-1">ברוכים הבאים!</h2>
-      <p id="loginSubtitle" class="text-sm text-slate-500 mb-6">הזינו את שמכם וקוד בן 4 ספרות (לזיהוי ועריכה בעתיד):</p>
-      
-      <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
-        <div>
-          <label id="labelName" class="block text-sm font-semibold text-slate-700 mb-1">שם מלא</label>
-          <input type="text" id="guestName" required placeholder="לדוגמה: דני ישראלי" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base">
-        </div>
-        <div>
-          <label id="labelPin" class="block text-sm font-semibold text-slate-700 mb-1">קוד אישי (4 ספרות)</label>
-          <input type="tel" id="guestPin" required pattern="[0-9]{4}" maxlength="4" placeholder="••••" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-center tracking-widest text-lg font-bold text-base">
-        </div>
-        <button type="submit" id="btnContinue" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-base">
-          המשך לטופס
+  <div class="w-full max-w-xl flex flex-col items-center">
+    <!-- Header & Language Switcher -->
+    <header class="w-full flex flex-col items-center mb-6 gap-3 md:flex-row md:justify-between md:gap-0">
+      <div class="flex items-center gap-2 text-center md:text-right">
+        <span class="text-3xl">🍯🍎</span>
+        <h1 id="appTitle" class="text-xl md:text-2xl font-bold text-slate-800">ארוחת ראש השנה 2026</h1>
+      </div>
+      <div class="flex items-center gap-2 w-full justify-center md:w-auto md:justify-end">
+        <button id="langToggleBtn" onclick="toggleLanguage()" class="flex-1 md:flex-none px-4 py-1.5 bg-white border border-slate-300 rounded-full text-sm font-semibold shadow-sm hover:bg-slate-100 transition whitespace-nowrap">
+          English
         </button>
-      </form>
-    </div>
+        <button onclick="openHostModal()" class="flex-1 md:flex-none px-4 py-1.5 bg-amber-500 text-white rounded-full text-sm font-semibold shadow-sm hover:bg-amber-600 transition whitespace-nowrap">
+          👑 <span id="hostBtnText">מארח</span>
+        </button>
+      </div>
+    </header>
 
-    <!-- Step 2: RSVP & Potluck Details Form -->
-    <div id="rsvpStep" class="hidden">
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b pb-4 mb-6 gap-2">
-        <div>
-          <h2 class="text-lg font-bold text-slate-900"><span id="greetingText">שלום</span>, <span id="currentGuestName" class="text-amber-600"></span>!</h2>
-          <p id="formSubtitle" class="text-xs text-slate-400">ניתן לעדכן את הפרטים בכל עת</p>
-        </div>
-        <button onclick="logoutGuest()" id="btnSwitchUser" class="text-sm text-slate-500 hover:text-slate-700 underline text-right sm:text-left">החלף משתמש</button>
+    <!-- Step 1: Login / Identifier Card -->
+    <main class="w-full bg-white rounded-2xl shadow-lg border border-slate-100 p-6 md:p-8">
+      <div id="authStep">
+        <h2 id="loginTitle" class="text-lg font-bold text-slate-900 mb-1">ברוכים הבאים!</h2>
+        <p id="loginSubtitle" class="text-sm text-slate-500 mb-6">הזינו את שמכם וקוד בן 4 ספרות (לזיהוי ועריכה בעתיד):</p>
+
+        <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+          <div>
+            <label id="labelName" class="block text-sm font-semibold text-slate-700 mb-1">שם מלא</label>
+            <input type="text" id="guestName" required placeholder="לדוגמה: דני ישראלי" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base">
+          </div>
+          <div>
+            <label id="labelPin" class="block text-sm font-semibold text-slate-700 mb-1">קוד אישי (4 ספרות)</label>
+            <input type="tel" id="guestPin" required pattern="[0-9]{4}" maxlength="4" inputmode="numeric" enterkeyhint="go" placeholder="••••" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-center tracking-widest text-lg font-bold text-base">
+          </div>
+          <button type="submit" id="btnContinue" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-base disabled:opacity-60 disabled:cursor-not-allowed">
+            <span id="btnContinueText">המשך לטופס</span>
+          </button>
+        </form>
       </div>
 
-      <form onsubmit="handleFormSubmit(event)" class="space-y-6">
-        <!-- Attendance -->
-        <div>
-          <label id="labelAttendance" class="block text-sm font-semibold text-slate-700 mb-2">האם תגיעו לחגוג איתנו?</label>
-          <div class="grid grid-cols-2 gap-3">
-            <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
-              <input type="radio" name="attending" value="yes" checked onchange="toggleFormFields(true)" class="hidden">
-              <span id="radioYes" class="font-bold text-slate-800 text-sm md:text-base">🎉 מגיע/ה</span>
-            </label>
-            <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
-              <input type="radio" name="attending" value="no" onchange="toggleFormFields(false)" class="hidden">
-              <span id="radioNo" class="font-bold text-slate-800 text-sm md:text-base">😢 לא מגיע/ה</span>
-            </label>
+      <!-- Step 2: RSVP & Potluck Details Form -->
+      <div id="rsvpStep" class="hidden">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b pb-4 mb-6 gap-2">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900"><span id="greetingText">שלום</span>, <span id="currentGuestName" class="text-amber-600"></span>!</h2>
+            <p id="formSubtitle" class="text-xs text-slate-400">ניתן לעדכן או לבטל את ההגעה בכל עת — פשוט היכנסו שוב עם אותו שם וקוד</p>
+            <p id="lastUpdatedText" class="text-xs text-slate-400 mt-0.5 hidden"></p>
           </div>
+          <button onclick="logoutGuest()" id="btnSwitchUser" class="text-sm text-slate-500 hover:text-slate-700 underline text-right sm:text-left">החלף משתמש</button>
         </div>
 
-        <div id="attendingFields" class="space-y-6">
-          <!-- Party Size -->
+        <form onsubmit="handleFormSubmit(event)" class="space-y-6">
+          <!-- Attendance -->
           <div>
-            <label id="labelPartySize" class="block text-sm font-semibold text-slate-700 mb-2">מגיעים לבד או עם פלוס 1?</label>
+            <label id="labelAttendance" class="block text-sm font-semibold text-slate-700 mb-2">האם תגיעו לחגוג איתנו?</label>
             <div class="grid grid-cols-2 gap-3">
-              <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
-                <input type="radio" name="partySize" value="1" checked class="hidden">
-                <span id="partySolo" class="font-semibold text-sm">👤 לבד (1)</span>
+              <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
+                <input type="radio" name="attending" value="yes" checked onchange="toggleFormFields(true)" class="hidden">
+                <span id="radioYes" class="font-bold text-slate-800 text-sm md:text-base">🎉 מגיע/ה</span>
               </label>
-              <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
-                <input type="radio" name="partySize" value="2" class="hidden">
-                <span id="partyPlusOne" class="font-semibold text-sm">👥 עם +1 (2)</span>
+              <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
+                <input type="radio" name="attending" value="no" onchange="toggleFormFields(false)" class="hidden">
+                <span id="radioNo" class="font-bold text-slate-800 text-sm md:text-base">😢 לא מגיע/ה</span>
               </label>
+            </div>
+            <p id="cancelHint" class="text-xs text-slate-400 mt-1.5 hidden">בחירה ב"לא מגיע/ה" ושמירה תבטל את ההגעה שלכם — ניתן לחזור ולשנות בכל רגע.</p>
+          </div>
+
+          <div id="attendingFields" class="space-y-6">
+            <!-- Party Size -->
+            <div>
+              <label id="labelPartySize" class="block text-sm font-semibold text-slate-700 mb-2">מגיעים לבד או עם פלוס 1?</label>
+              <div class="grid grid-cols-2 gap-3">
+                <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
+                  <input type="radio" name="partySize" value="1" checked class="hidden">
+                  <span id="partySolo" class="font-semibold text-sm">👤 לבד (1)</span>
+                </label>
+                <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
+                  <input type="radio" name="partySize" value="2" class="hidden">
+                  <span id="partyPlusOne" class="font-semibold text-sm">👥 עם +1 (2)</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Dish Selection -->
+            <div>
+              <label id="labelDishCategory" class="block text-sm font-semibold text-slate-700 mb-1">מה תביאו לארוחה?</label>
+              <select id="dishCategory" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none mb-3 text-base">
+                <option value="starter">🥗 מנה ראשונה / סלט</option>
+                <option value="main">🍲 מנה עיקרית</option>
+                <option value="side">🍚 תוספת</option>
+                <option value="dessert">🍰 קינוח / עוגה</option>
+                <option value="other">🥨 נשנוש / אחר</option>
+              </select>
+              <label id="labelDishDetails" class="block text-xs font-medium text-slate-500 mb-1">פירוט המנה (מלל חופשי):</label>
+              <textarea id="dishDescription" rows="2" placeholder="למשל: סלט חגיגי עם רימונים ותפוחים" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base"></textarea>
+            </div>
+
+            <!-- Dietary Restrictions -->
+            <div>
+              <label id="labelDietary" class="block text-sm font-semibold text-slate-700 mb-1">הגבלות תזונה / אלרגיות (רשות)</label>
+              <input type="text" id="dietaryRestrictions" placeholder="למשל: צמחוני, ללא גלוטן, אלרגיה לאגוזים" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base">
+            </div>
+
+            <!-- Alcohol & Soft Drinks -->
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+              <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">שתייה והעדפות 🍷</label>
+              <div class="space-y-2">
+                <label class="flex items-center gap-2 cursor-pointer text-base font-medium text-slate-700">
+                  <input type="checkbox" id="drinksAlcohol" checked class="w-5 h-5 text-amber-600 rounded">
+                  <span id="checkboxDrinksAlcohol">שותה אלכוהול</span>
+                </label>
+              </div>
+
+              <div id="nonAlcoholField" class="pt-2 border-t border-slate-200">
+                <label id="labelSoftDrink" class="block text-xs font-semibold text-slate-700 mb-1">אם לא שותים אלכוהול, איזה שתייה אחת תעדיפו?</label>
+                <input type="text" id="softDrinkChoice" placeholder="למשל: זירו, סודה, מיץ..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base bg-white">
+              </div>
             </div>
           </div>
 
-          <!-- Dish Selection -->
-          <div>
-            <label id="labelDishCategory" class="block text-sm font-semibold text-slate-700 mb-1">מה תביאו לארוחה?</label>
-            <select id="dishCategory" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none mb-3 text-base">
-              <option value="starter">🥗 מנה ראשונה / סלט</option>
-              <option value="main">🍲 מנה עיקרית</option>
-              <option value="side">🍚 תוספת</option>
-              <option value="dessert">🍰 קינוח / עוגה</option>
-              <option value="other">🥨 נשנוש / אחר</option>
-            </select>
-            <label id="labelDishDetails" class="block text-xs font-medium text-slate-500 mb-1">פירוט המנה (מלל חופשי):</label>
-            <textarea id="dishDescription" rows="2" placeholder="למשל: סלט חגיגי עם רימונים ותפוחים" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base"></textarea>
-          </div>
+          <button type="submit" id="btnSave" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-lg disabled:opacity-60 disabled:cursor-not-allowed">
+            <span id="btnSaveText">שמור אישור הגעה</span>
+          </button>
+          <p id="saveStatus" class="text-center text-sm font-semibold text-emerald-600 hidden"></p>
+          <p id="saveError" class="text-center text-sm font-semibold text-red-600 hidden"></p>
+        </form>
+      </div>
+    </main>
+  </div>
 
-          <!-- Alcohol & Soft Drinks -->
-          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-            <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">שתייה והעדפות 🍷</label>
-            <div class="space-y-2">
-              <label class="flex items-center gap-2 cursor-pointer text-base font-medium text-slate-700">
-                <input type="checkbox" id="drinksAlcohol" checked class="w-5 h-5 text-amber-600 rounded">
-                <span id="checkboxDrinksAlcohol">שותה אלכוהול</span>
-              </label>
-            </div>
-
-            <div id="nonAlcoholField" class="pt-2 border-t border-slate-200">
-              <label id="labelSoftDrink" class="block text-xs font-semibold text-slate-700 mb-1">אם לא שותים אלכוהול, איזה שתייה אחת תעדיפו?</label>
-              <input type="text" id="softDrinkChoice" placeholder="למשל: זירו, סודה, מיץ..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base bg-white">
-            </div>
-          </div>
-        </div>
-
-        <button type="submit" id="btnSave" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-lg">
-          שמור אישור הגעה
-        </button>
-        <p id="saveStatus" class="text-center text-sm font-semibold text-emerald-600 hidden"></p>
-      </form>
-    </div>
-  </main>
+  <!-- Footer with Version -->
+  <footer class="mt-8 text-center text-xs text-slate-400">
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.2.0</span></span>
+  </footer>
 
   <!-- Host Dashboard Modal -->
   <div id="hostModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-2 sm:p-4 hidden">
@@ -144,8 +172,10 @@
       <!-- Host Login -->
       <div id="hostAuthDiv" class="space-y-4">
         <p id="hostPassPrompt" class="text-sm text-slate-600">הזן קוד גישה למארח:</p>
-        <input type="password" id="hostPassInput" placeholder="••••" class="w-full px-4 py-2 border rounded-xl text-base text-center tracking-widest font-bold">
-        <button onclick="verifyHostPass()" id="btnHostEnter" class="w-full py-2.5 bg-amber-500 text-white font-bold rounded-xl text-base">כניסה לדשבורד</button>
+        <input type="password" id="hostPassInput" enterkeyhint="go" onkeydown="if(event.key==='Enter'){event.preventDefault();verifyHostPass();}" placeholder="••••" class="w-full px-4 py-2 border rounded-xl text-base text-center tracking-widest font-bold">
+        <button onclick="verifyHostPass()" id="btnHostEnter" class="w-full py-2.5 bg-amber-500 text-white font-bold rounded-xl text-base disabled:opacity-60 disabled:cursor-not-allowed">
+          <span id="btnHostEnterText">כניסה לדשבורד</span>
+        </button>
         <p id="hostError" class="text-red-500 text-xs font-semibold text-center hidden">קוד שגוי</p>
       </div>
 
@@ -166,9 +196,27 @@
           </div>
         </div>
 
+        <!-- Search & Filter -->
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input type="text" id="hostSearchInput" oninput="renderHostLists()" placeholder="חיפוש לפי שם..." class="flex-1 px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm">
+          <select id="hostCategoryFilter" onchange="renderHostLists()" class="px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm">
+            <option value="all" id="filterAll">כל הקטגוריות</option>
+            <option value="starter" id="filterStarter">🥗 מנה ראשונה / סלט</option>
+            <option value="main" id="filterMain">🍲 מנה עיקרית</option>
+            <option value="side" id="filterSide">🍚 תוספת</option>
+            <option value="dessert" id="filterDessert">🍰 קינוח / עוגה</option>
+            <option value="other" id="filterOther">🥨 נשנוש / אחר</option>
+          </select>
+        </div>
+
         <div>
           <h3 id="hostDishesTitle" class="font-bold text-slate-800 mb-2.5 text-base">🍽️ חלוקת מנות</h3>
           <div id="dishesList" class="space-y-2.5 text-sm"></div>
+        </div>
+
+        <div>
+          <h3 id="hostDietaryTitle" class="font-bold text-slate-800 mb-2 text-base">🥗 הגבלות תזונה</h3>
+          <div id="dietaryList" class="space-y-1.5 text-sm bg-slate-50 p-3 rounded-xl border border-slate-200"></div>
         </div>
 
         <div>
@@ -216,12 +264,15 @@
         namePlaceholder: 'לדוגמה: דני ישראלי',
         labelPin: 'קוד אישי (4 ספרות)',
         btnContinue: 'המשך לטופס',
+        btnContinueLoading: 'טוען...',
         greetingText: 'שלום',
-        formSubtitle: 'ניתן לעדכן את הפרטים בכל עת',
+        formSubtitle: 'ניתן לעדכן או לבטל את ההגעה בכל עת — פשוט היכנסו שוב עם אותו שם וקוד',
+        lastUpdatedPrefix: 'עודכן לאחרונה: ',
         btnSwitchUser: 'החלף משתמש',
         labelAttendance: 'האם תגיעו לחגוג איתנו?',
         radioYes: '🎉 מגיע/ה',
         radioNo: '😢 לא מגיע/ה',
+        cancelHint: 'בחירה ב"לא מגיע/ה" ושמירה תבטל את ההגעה שלכם — ניתן לחזור ולשנות בכל רגע.',
         labelPartySize: 'מגיעים לבד או עם פלוס 1?',
         partySolo: '👤 לבד (1)',
         partyPlusOne: '👥 עם +1 (2)',
@@ -233,22 +284,35 @@
         catOther: '🥨 נשנוש / אחר',
         labelDishDetails: 'פירוט המנה (מלל חופשי):',
         dishPlaceholder: 'למשל: סלט חגיגי עם רימונים ותפוחים',
+        labelDietary: 'הגבלות תזונה / אלרגיות (רשות)',
+        dietaryPlaceholder: 'למשל: צמחוני, ללא גלוטן, אלרגיה לאגוזים',
         labelAlcoholSection: 'שתייה והעדפות 🍷',
         checkboxDrinksAlcohol: 'שותה אלכוהול',
         labelSoftDrink: 'אם לא שותים אלכוהול, איזה שתייה אחת תעדיפו?',
         softDrinkPlaceholder: 'למשל: זירו, סודה, מיץ...',
         btnSave: 'שמור אישור הגעה',
+        btnSaveLoading: 'שומר...',
         savedSuccess: 'הנתונים נשמרו בהצלחה! 🍯',
+        saveErrorText: 'שגיאה בשמירה, נסו שוב.',
         hostModalTitle: '👑 דשבורד מארח',
         hostPassPrompt: 'הזן קוד גישה למארח:',
         hostPassPlaceholder: '••••',
         btnHostEnter: 'כניסה לדשבורד',
+        btnHostEnterLoading: 'טוען נתונים...',
         hostError: 'קוד שגוי',
         statTotalGuests: 'סך רשומים',
         statAttending: 'מאשרים (עם +1)',
         statDeclined: 'לא מגיעים',
+        hostSearchPlaceholder: 'חיפוש לפי שם...',
+        filterAll: 'כל הקטגוריות',
         hostDishesTitle: '🍽️ חלוקת מנות',
+        hostDietaryTitle: '🥗 הגבלות תזונה',
         hostDrinksTitle: '🥤 בקשות לשתייה קלה',
+        noDishes: 'טרם הוזנו מנות',
+        noDietary: 'לא צוינו הגבלות תזונה',
+        noDrinks: 'אין בקשות כרגע',
+        noResults: 'אין תוצאות תואמות לחיפוש',
+        alcoholNoTag: '🚫 אלכוהול',
         langBtnText: 'English'
       },
       en: {
@@ -261,12 +325,15 @@
         namePlaceholder: 'e.g. Alex Cohen',
         labelPin: 'Personal PIN (4 digits)',
         btnContinue: 'Continue to RSVP',
+        btnContinueLoading: 'Loading...',
         greetingText: 'Hello',
-        formSubtitle: 'You can update your response at any time',
+        formSubtitle: 'You can update or cancel your RSVP anytime — just log back in with the same name and PIN',
+        lastUpdatedPrefix: 'Last updated: ',
         btnSwitchUser: 'Switch user',
         labelAttendance: 'Will you join the dinner?',
         radioYes: '🎉 Attending',
         radioNo: '😢 Not Attending',
+        cancelHint: 'Choosing "Not Attending" and saving will cancel your RSVP — you can change it back anytime.',
         labelPartySize: 'Coming alone or +1?',
         partySolo: '👤 Solo (1)',
         partyPlusOne: '👥 With +1 (2)',
@@ -278,40 +345,74 @@
         catOther: '🥨 Snacks / Other',
         labelDishDetails: 'Dish details (free text):',
         dishPlaceholder: 'e.g., Pomegranate salad with pecans',
+        labelDietary: 'Dietary restrictions / allergies (optional)',
+        dietaryPlaceholder: 'e.g., Vegetarian, gluten-free, nut allergy',
         labelAlcoholSection: 'Drinks & Preferences 🍷',
         checkboxDrinksAlcohol: 'Drinks alcohol',
         labelSoftDrink: 'If non-alcoholic, which drink would you like?',
         softDrinkPlaceholder: 'e.g., Diet Coke, Sparkling Water, Juice...',
         btnSave: 'Save RSVP',
+        btnSaveLoading: 'Saving...',
         savedSuccess: 'Saved successfully! 🍯',
+        saveErrorText: 'Failed to save, please try again.',
         hostModalTitle: '👑 Host Dashboard',
         hostPassPrompt: 'Enter host PIN:',
         hostPassPlaceholder: '••••',
         btnHostEnter: 'Enter Dashboard',
+        btnHostEnterLoading: 'Loading data...',
         hostError: 'Invalid code',
         statTotalGuests: 'Total Registered',
         statAttending: 'Attending (+1s)',
         statDeclined: 'Declined',
+        hostSearchPlaceholder: 'Search by name...',
+        filterAll: 'All categories',
         hostDishesTitle: '🍽️ Dishes',
+        hostDietaryTitle: '🥗 Dietary Restrictions',
         hostDrinksTitle: '🥤 Soft Drink Requests',
+        noDishes: 'No dishes entered yet',
+        noDietary: 'No dietary restrictions noted',
+        noDrinks: 'No requests yet',
+        noResults: 'No results match your search',
+        alcoholNoTag: '🚫 Alcohol',
         langBtnText: 'עברית'
       }
     };
 
     let currentLang = 'he';
     let activeUser = null;
-    const HOST_SECRET_PIN = "9999"; 
+    const HOST_SECRET_PIN = "9999";
+
+    let allDishes = [];
+    let allDrinks = [];
+    let allDietary = [];
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+
+    function catLabel(category) {
+      const t = i18n[currentLang];
+      const map = { starter: t.catStarter, main: t.catMain, side: t.catSide, dessert: t.catDessert, other: t.catOther };
+      return map[category] || category;
+    }
 
     function toggleLanguage() {
       currentLang = currentLang === 'he' ? 'en' : 'he';
       applyLanguage(currentLang);
+      if (!document.getElementById('hostDataDiv').classList.contains('hidden')) {
+        renderHostLists();
+      }
+      updateLastUpdatedText();
     }
 
     function applyLanguage(lang) {
       const t = i18n[lang];
       document.documentElement.dir = t.dir;
       document.documentElement.lang = lang;
-      
+
       document.getElementById('appTitle').innerText = t.appTitle;
       document.getElementById('langToggleBtn').innerText = t.langBtnText;
       document.getElementById('hostBtnText').innerText = t.hostBtnText;
@@ -320,33 +421,44 @@
       document.getElementById('labelName').innerText = t.labelName;
       document.getElementById('guestName').placeholder = t.namePlaceholder;
       document.getElementById('labelPin').innerText = t.labelPin;
-      document.getElementById('btnContinue').innerText = t.btnContinue;
+      document.getElementById('btnContinueText').innerText = t.btnContinue;
       document.getElementById('greetingText').innerText = t.greetingText;
       document.getElementById('formSubtitle').innerText = t.formSubtitle;
       document.getElementById('btnSwitchUser').innerText = t.btnSwitchUser;
       document.getElementById('labelAttendance').innerText = t.labelAttendance;
       document.getElementById('radioYes').innerText = t.radioYes;
       document.getElementById('radioNo').innerText = t.radioNo;
+      document.getElementById('cancelHint').innerText = t.cancelHint;
       document.getElementById('labelPartySize').innerText = t.labelPartySize;
       document.getElementById('partySolo').innerText = t.partySolo;
       document.getElementById('partyPlusOne').innerText = t.partyPlusOne;
       document.getElementById('labelDishCategory').innerText = t.labelDishCategory;
       document.getElementById('labelDishDetails').innerText = t.labelDishDetails;
       document.getElementById('dishDescription').placeholder = t.dishPlaceholder;
+      document.getElementById('labelDietary').innerText = t.labelDietary;
+      document.getElementById('dietaryRestrictions').placeholder = t.dietaryPlaceholder;
       document.getElementById('labelAlcoholSection').innerText = t.labelAlcoholSection;
       document.getElementById('checkboxDrinksAlcohol').innerText = t.checkboxDrinksAlcohol;
       document.getElementById('labelSoftDrink').innerText = t.labelSoftDrink;
       document.getElementById('softDrinkChoice').placeholder = t.softDrinkPlaceholder;
-      document.getElementById('btnSave').innerText = t.btnSave;
+      document.getElementById('btnSaveText').innerText = t.btnSave;
       document.getElementById('hostModalTitle').innerText = t.hostModalTitle;
       document.getElementById('hostPassPrompt').innerText = t.hostPassPrompt;
       document.getElementById('hostPassInput').placeholder = t.hostPassPlaceholder;
-      document.getElementById('btnHostEnter').innerText = t.btnHostEnter;
+      document.getElementById('btnHostEnterText').innerText = t.btnHostEnter;
       document.getElementById('hostError').innerText = t.hostError;
       document.getElementById('statTotalGuests').innerText = t.statTotalGuests;
       document.getElementById('statAttending').innerText = t.statAttending;
       document.getElementById('statDeclined').innerText = t.statDeclined;
+      document.getElementById('hostSearchInput').placeholder = t.hostSearchPlaceholder;
+      document.getElementById('filterAll').innerText = t.filterAll;
+      document.getElementById('filterStarter').innerText = t.catStarter;
+      document.getElementById('filterMain').innerText = t.catMain;
+      document.getElementById('filterSide').innerText = t.catSide;
+      document.getElementById('filterDessert').innerText = t.catDessert;
+      document.getElementById('filterOther').innerText = t.catOther;
       document.getElementById('hostDishesTitle').innerText = t.hostDishesTitle;
+      document.getElementById('hostDietaryTitle').innerText = t.hostDietaryTitle;
       document.getElementById('hostDrinksTitle').innerText = t.hostDrinksTitle;
 
       const select = document.getElementById('dishCategory');
@@ -355,6 +467,29 @@
       select.options[2].text = t.catSide;
       select.options[3].text = t.catDessert;
       select.options[4].text = t.catOther;
+    }
+
+    function setLoading(btn, textEl, isLoading, loadingText, normalText) {
+      btn.disabled = isLoading;
+      if (isLoading) {
+        textEl.innerHTML = `<span class="spinner"></span>${loadingText}`;
+      } else {
+        textEl.innerText = normalText;
+      }
+    }
+
+    let lastLoadedUpdatedAt = null;
+
+    function updateLastUpdatedText() {
+      const el = document.getElementById('lastUpdatedText');
+      if (!lastLoadedUpdatedAt) {
+        el.classList.add('hidden');
+        return;
+      }
+      const t = i18n[currentLang];
+      const d = new Date(lastLoadedUpdatedAt);
+      el.innerText = t.lastUpdatedPrefix + d.toLocaleString(currentLang === 'he' ? 'he-IL' : 'en-GB');
+      el.classList.remove('hidden');
     }
 
     async function handleAuthSubmit(e) {
@@ -367,16 +502,23 @@
       const userId = `${rawName.toLowerCase().replace(/\s+/g, '_')}_${pin}`;
       activeUser = { name: rawName, pin: pin, id: userId };
 
-      document.getElementById('currentGuestName').innerText = rawName;
-      document.getElementById('authStep').classList.add('hidden');
-      document.getElementById('rsvpStep').classList.remove('hidden');
+      const btn = document.getElementById('btnContinue');
+      const btnText = document.getElementById('btnContinueText');
+      const t = i18n[currentLang];
+      setLoading(btn, btnText, true, t.btnContinueLoading, t.btnContinue);
 
       try {
         const docRef = window.doc(window.db, "rsvps", userId);
         const docSnap = await window.getDoc(docRef);
 
+        document.getElementById('currentGuestName').innerText = rawName;
+        document.getElementById('authStep').classList.add('hidden');
+        document.getElementById('rsvpStep').classList.remove('hidden');
+
         if (docSnap.exists()) {
           const data = docSnap.data();
+          lastLoadedUpdatedAt = data.updatedAt || null;
+
           if (data.attending === false) {
             document.querySelector('input[name="attending"][value="no"]').checked = true;
             toggleFormFields(false);
@@ -396,38 +538,51 @@
             document.getElementById('dishDescription').value = data.dish.description || '';
           }
 
+          document.getElementById('dietaryRestrictions').value = data.dietary || '';
+
           if (data.alcohol) {
             document.getElementById('drinksAlcohol').checked = data.alcohol.drinksAlcohol;
             document.getElementById('softDrinkChoice').value = data.alcohol.preferredSoftDrink || '';
           }
         } else {
-            document.querySelector('input[name="attending"][value="yes"]').checked = true;
-            toggleFormFields(true);
-            document.querySelector('input[name="partySize"][value="1"]').checked = true;
-            document.getElementById('dishCategory').value = 'starter';
-            document.getElementById('dishDescription').value = '';
-            document.getElementById('drinksAlcohol').checked = true;
-            document.getElementById('softDrinkChoice').value = '';
+          lastLoadedUpdatedAt = null;
+          document.querySelector('input[name="attending"][value="yes"]').checked = true;
+          toggleFormFields(true);
+          document.querySelector('input[name="partySize"][value="1"]').checked = true;
+          document.getElementById('dishCategory').value = 'starter';
+          document.getElementById('dishDescription').value = '';
+          document.getElementById('dietaryRestrictions').value = '';
+          document.getElementById('drinksAlcohol').checked = true;
+          document.getElementById('softDrinkChoice').value = '';
         }
+        updateLastUpdatedText();
       } catch (err) {
         console.error("Error reading document:", err);
+        alert(t.saveErrorText);
+      } finally {
+        setLoading(btn, btnText, false, t.btnContinueLoading, t.btnContinue);
       }
     }
 
     function logoutGuest() {
       activeUser = null;
+      lastLoadedUpdatedAt = null;
       document.getElementById('rsvpStep').classList.add('hidden');
       document.getElementById('authStep').classList.remove('hidden');
       document.getElementById('saveStatus').classList.add('hidden');
+      document.getElementById('saveError').classList.add('hidden');
       document.getElementById('guestPin').value = '';
     }
 
     function toggleFormFields(isAttending) {
       const fields = document.getElementById('attendingFields');
+      const hint = document.getElementById('cancelHint');
       if (isAttending) {
         fields.classList.remove('hidden');
+        hint.classList.add('hidden');
       } else {
         fields.classList.add('hidden');
+        hint.classList.remove('hidden');
       }
     }
 
@@ -435,9 +590,18 @@
       e.preventDefault();
       if (!activeUser) return;
 
+      const t = i18n[currentLang];
+      const btn = document.getElementById('btnSave');
+      const btnText = document.getElementById('btnSaveText');
+      const statusEl = document.getElementById('saveStatus');
+      const errorEl = document.getElementById('saveError');
+      statusEl.classList.add('hidden');
+      errorEl.classList.add('hidden');
+
       const isAttending = document.querySelector('input[name="attending"]:checked').value === 'yes';
       const partySize = isAttending ? parseInt(document.querySelector('input[name="partySize"]:checked').value) : 0;
-      
+      const nowIso = new Date().toISOString();
+
       const payload = {
         name: activeUser.name,
         pin: activeUser.pin,
@@ -447,23 +611,32 @@
           category: document.getElementById('dishCategory').value,
           description: document.getElementById('dishDescription').value.trim()
         } : null,
+        dietary: isAttending ? document.getElementById('dietaryRestrictions').value.trim() : '',
         alcohol: isAttending ? {
           drinksAlcohol: document.getElementById('drinksAlcohol').checked,
           preferredSoftDrink: document.getElementById('softDrinkChoice').value.trim()
         } : null,
-        updatedAt: new Date().toISOString()
+        updatedAt: nowIso
       };
+
+      setLoading(btn, btnText, true, t.btnSaveLoading, t.btnSave);
 
       try {
         const docRef = window.doc(window.db, "rsvps", activeUser.id);
         await window.setDoc(docRef, payload);
 
-        const statusEl = document.getElementById('saveStatus');
-        statusEl.innerText = i18n[currentLang].savedSuccess;
+        lastLoadedUpdatedAt = nowIso;
+        updateLastUpdatedText();
+
+        statusEl.innerText = t.savedSuccess;
         statusEl.classList.remove('hidden');
         setTimeout(() => statusEl.classList.add('hidden'), 4000);
       } catch (err) {
-        alert("Error saving: " + err.message);
+        console.error("Error saving:", err);
+        errorEl.innerText = t.saveErrorText;
+        errorEl.classList.remove('hidden');
+      } finally {
+        setLoading(btn, btnText, false, t.btnSaveLoading, t.btnSave);
       }
     }
 
@@ -481,80 +654,127 @@
 
     async function verifyHostPass() {
       const entered = document.getElementById('hostPassInput').value.trim();
+      const t = i18n[currentLang];
       if (entered === HOST_SECRET_PIN) {
-        document.getElementById('hostAuthDiv').classList.add('hidden');
-        document.getElementById('hostDataDiv').classList.remove('hidden');
-        await loadHostDashboardData();
+        const btn = document.getElementById('btnHostEnter');
+        const btnText = document.getElementById('btnHostEnterText');
+        setLoading(btn, btnText, true, t.btnHostEnterLoading, t.btnHostEnter);
+        try {
+          await loadHostDashboardData();
+          document.getElementById('hostAuthDiv').classList.add('hidden');
+          document.getElementById('hostDataDiv').classList.remove('hidden');
+        } catch (err) {
+          console.error("Host data error:", err);
+        } finally {
+          setLoading(btn, btnText, false, t.btnHostEnterLoading, t.btnHostEnter);
+        }
       } else {
         document.getElementById('hostError').classList.remove('hidden');
       }
     }
 
     async function loadHostDashboardData() {
-      try {
-        const querySnapshot = await window.getDocs(window.collection(window.db, "rsvps"));
-        let total = 0;
-        let attendingCount = 0;
-        let declinedCount = 0;
-        const dishes = [];
-        const drinks = [];
+      const querySnapshot = await window.getDocs(window.collection(window.db, "rsvps"));
+      let total = 0;
+      let attendingCount = 0;
+      let declinedCount = 0;
+      allDishes = [];
+      allDrinks = [];
+      allDietary = [];
 
-        querySnapshot.forEach((doc) => {
-          total++;
-          const item = doc.data();
-          if (item.attending) {
-            attendingCount += (item.partySize || 1);
-            if (item.dish && item.dish.description) {
-              dishes.push({
-                guest: item.name,
-                category: item.dish.category,
-                description: item.dish.description
-              });
-            }
-            if (item.alcohol && item.alcohol.preferredSoftDrink) {
-              drinks.push({
-                guest: item.name,
-                drinksAlcohol: item.alcohol.drinksAlcohol,
-                softDrink: item.alcohol.preferredSoftDrink
-              });
-            }
-          } else {
-            declinedCount++;
+      querySnapshot.forEach((doc) => {
+        total++;
+        const item = doc.data();
+        if (item.attending) {
+          attendingCount += (item.partySize || 1);
+          if (item.dish && item.dish.description) {
+            allDishes.push({
+              guest: item.name,
+              category: item.dish.category,
+              description: item.dish.description
+            });
           }
-        });
-
-        document.getElementById('hostCountGuests').innerText = total;
-        document.getElementById('hostCountAttending').innerText = attendingCount;
-        document.getElementById('hostCountDeclined').innerText = declinedCount;
-
-        const dishesContainer = document.getElementById('dishesList');
-        if (dishes.length === 0) {
-          dishesContainer.innerHTML = '<p class="text-slate-400 italic text-center py-4">טרם הוזנו מנות</p>';
+          if (item.dietary) {
+            allDietary.push({ guest: item.name, note: item.dietary });
+          }
+          if (item.alcohol && item.alcohol.preferredSoftDrink) {
+            allDrinks.push({
+              guest: item.name,
+              drinksAlcohol: item.alcohol.drinksAlcohol,
+              softDrink: item.alcohol.preferredSoftDrink
+            });
+          }
         } else {
-          dishesContainer.innerHTML = dishes.map(d => `
-            <div class="p-3 bg-slate-50 border rounded-lg flex justify-between items-start gap-2">
-              <div class="flex-1">
-                <span class="font-bold text-slate-800">${d.guest}:</span>
-                <span class="text-slate-600 block mt-0.5">${d.description}</span>
-              </div>
-              <span class="text-xs px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-semibold whitespace-nowrap mt-0.5">${d.category}</span>
-            </div>
-          `).join('');
+          declinedCount++;
         }
+      });
 
-        const drinksContainer = document.getElementById('drinksList');
-        if (drinks.length === 0) {
-          drinksContainer.innerHTML = '<p class="text-slate-400 italic text-center py-2">אין בקשות כרגע</p>';
-        } else {
-          drinksContainer.innerHTML = drinks.map(dr => `
-            <div class="flex justify-between py-1.5 border-b last:border-0 items-baseline gap-2">
-              <span class="font-semibold text-slate-800">${dr.guest} ${!dr.drinksAlcohol ? '<span class="text-xs text-slate-500">(🚫 אלכוהול)</span>' : ''}</span>
-              <span class="text-slate-600 text-right">${dr.softDrink}</span>
+      document.getElementById('hostCountGuests').innerText = total;
+      document.getElementById('hostCountAttending').innerText = attendingCount;
+      document.getElementById('hostCountDeclined').innerText = declinedCount;
+
+      renderHostLists();
+    }
+
+    function renderHostLists() {
+      const t = i18n[currentLang];
+      const searchTerm = document.getElementById('hostSearchInput').value.trim().toLowerCase();
+      const categoryFilter = document.getElementById('hostCategoryFilter').value;
+
+      const filteredDishes = allDishes.filter(d =>
+        (!searchTerm || d.guest.toLowerCase().includes(searchTerm)) &&
+        (categoryFilter === 'all' || d.category === categoryFilter)
+      );
+      const filteredDrinks = allDrinks.filter(dr =>
+        !searchTerm || dr.guest.toLowerCase().includes(searchTerm)
+      );
+      const filteredDietary = allDietary.filter(die =>
+        !searchTerm || die.guest.toLowerCase().includes(searchTerm)
+      );
+
+      const dishesContainer = document.getElementById('dishesList');
+      if (allDishes.length === 0) {
+        dishesContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4">${escapeHtml(t.noDishes)}</p>`;
+      } else if (filteredDishes.length === 0) {
+        dishesContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4">${escapeHtml(t.noResults)}</p>`;
+      } else {
+        dishesContainer.innerHTML = filteredDishes.map(d => `
+          <div class="p-3 bg-slate-50 border rounded-lg flex justify-between items-start gap-2">
+            <div class="flex-1">
+              <span class="font-bold text-slate-800">${escapeHtml(d.guest)}:</span>
+              <span class="text-slate-600 block mt-0.5">${escapeHtml(d.description)}</span>
             </div>
-          `).join('');
-        }
-      } catch (err) {
-        console.error("Host data error:", err);
+            <span class="text-xs px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-semibold whitespace-nowrap mt-0.5">${escapeHtml(catLabel(d.category))}</span>
+          </div>
+        `).join('');
+      }
+
+      const dietaryContainer = document.getElementById('dietaryList');
+      if (allDietary.length === 0) {
+        dietaryContainer.innerHTML = `<p class="text-slate-400 italic text-center py-2">${escapeHtml(t.noDietary)}</p>`;
+      } else if (filteredDietary.length === 0) {
+        dietaryContainer.innerHTML = `<p class="text-slate-400 italic text-center py-2">${escapeHtml(t.noResults)}</p>`;
+      } else {
+        dietaryContainer.innerHTML = filteredDietary.map(die => `
+          <div class="flex justify-between py-1.5 border-b last:border-0 items-baseline gap-2">
+            <span class="font-semibold text-slate-800">${escapeHtml(die.guest)}</span>
+            <span class="text-slate-600 text-right">${escapeHtml(die.note)}</span>
+          </div>
+        `).join('');
+      }
+
+      const drinksContainer = document.getElementById('drinksList');
+      if (allDrinks.length === 0) {
+        drinksContainer.innerHTML = `<p class="text-slate-400 italic text-center py-2">${escapeHtml(t.noDrinks)}</p>`;
+      } else if (filteredDrinks.length === 0) {
+        drinksContainer.innerHTML = `<p class="text-slate-400 italic text-center py-2">${escapeHtml(t.noResults)}</p>`;
+      } else {
+        drinksContainer.innerHTML = filteredDrinks.map(dr => `
+          <div class="flex justify-between py-1.5 border-b last:border-0 items-baseline gap-2">
+            <span class="font-semibold text-slate-800">${escapeHtml(dr.guest)} ${!dr.drinksAlcohol ? `<span class="text-xs text-slate-500">(${escapeHtml(t.alcoholNoTag)})</span>` : ''}</span>
+            <span class="text-slate-600 text-right">${escapeHtml(dr.softDrink)}</span>
+          </div>
+        `).join('');
       }
     }
   </script>
