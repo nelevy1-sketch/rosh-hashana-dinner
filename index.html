@@ -118,7 +118,7 @@
                 </button>
               </div>
               <div id="dishesInputContainer" class="space-y-3">
-                <!-- Dishes inserted here via JS -->
+                <!-- Dynamic dish rows inserted here -->
               </div>
             </div>
 
@@ -157,7 +157,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.3.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.4.0</span></span>
   </footer>
 
   <!-- Host Dashboard Modal -->
@@ -180,6 +180,7 @@
 
       <!-- Host Data View -->
       <div id="hostDataDiv" class="hidden space-y-6">
+        <!-- Stat Cards -->
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-center">
           <div class="bg-amber-50 p-3 rounded-xl border border-amber-200">
             <span class="text-xs text-amber-700 font-semibold whitespace-nowrap" id="statTotalGuests">סך רשומים</span>
@@ -208,16 +209,25 @@
           </select>
         </div>
 
+        <!-- NEW: Full Guests List & RSVP Status -->
+        <div>
+          <h3 id="hostGuestsListTitle" class="font-bold text-slate-800 mb-2.5 text-base">👥 רשימת כל האורחים וסטטוס הגעה</h3>
+          <div id="guestsFullList" class="space-y-2 text-sm bg-white"></div>
+        </div>
+
+        <!-- Dishes Breakdown -->
         <div>
           <h3 id="hostDishesTitle" class="font-bold text-slate-800 mb-2.5 text-base">🍽️ חלוקת מנות</h3>
           <div id="dishesList" class="space-y-2.5 text-sm"></div>
         </div>
 
+        <!-- Dietary Restrictions -->
         <div>
           <h3 id="hostDietaryTitle" class="font-bold text-slate-800 mb-2 text-base">🥗 הגבלות תזונה</h3>
           <div id="dietaryList" class="space-y-1.5 text-sm bg-slate-50 p-3 rounded-xl border border-slate-200"></div>
         </div>
 
+        <!-- Soft Drinks -->
         <div>
           <h3 id="hostDrinksTitle" class="font-bold text-slate-800 mb-2 text-base">🥤 בקשות לשתייה קלה</h3>
           <div id="drinksList" class="space-y-1.5 text-sm bg-slate-50 p-3 rounded-xl border border-slate-200"></div>
@@ -250,7 +260,6 @@
     window.collection = collection;
     window.getDocs = getDocs;
 
-    // Trigger auto-login on startup if credentials exist in localStorage
     window.addEventListener('DOMContentLoaded', () => {
       checkStoredAuth();
     });
@@ -309,14 +318,19 @@
         statDeclined: 'לא מגיעים',
         hostSearchPlaceholder: 'חיפוש לפי שם או מנה...',
         filterAll: 'כל הקטגוריות',
+        hostGuestsListTitle: '👥 רשימת כל האורחים וסטטוס הגעה',
         hostDishesTitle: '🍽️ חלוקת מנות',
         hostDietaryTitle: '🥗 הגבלות תזונה',
         hostDrinksTitle: '🥤 בקשות לשתייה קלה',
+        noGuests: 'טרם נרשמו אורחים',
         noDishes: 'טרם הוזנו מנות',
         noDietary: 'לא צוינו הגבלות תזונה',
         noDrinks: 'אין בקשות כרגע',
         noResults: 'אין תוצאות תואמות לחיפוש',
         alcoholNoTag: '🚫 אלכוהול',
+        statusAttendingSolo: 'מגיע/ה (1)',
+        statusAttendingPlusOne: 'מגיע/ה (+1 = 2)',
+        statusDeclined: 'לא מגיע/ה',
         langBtnText: 'English'
       },
       en: {
@@ -370,14 +384,19 @@
         statDeclined: 'Declined',
         hostSearchPlaceholder: 'Search by name or dish...',
         filterAll: 'All categories',
+        hostGuestsListTitle: '👥 All Guests & RSVP Status',
         hostDishesTitle: '🍽️ Dishes',
         hostDietaryTitle: '🥗 Dietary Restrictions',
         hostDrinksTitle: '🥤 Soft Drink Requests',
+        noGuests: 'No guests registered yet',
         noDishes: 'No dishes entered yet',
         noDietary: 'No dietary restrictions noted',
         noDrinks: 'No requests yet',
         noResults: 'No results match your search',
         alcoholNoTag: '🚫 Alcohol',
+        statusAttendingSolo: 'Attending (1)',
+        statusAttendingPlusOne: 'Attending (+1 = 2)',
+        statusDeclined: 'Not Attending',
         langBtnText: 'עברית'
       }
     };
@@ -386,6 +405,7 @@
     let activeUser = null;
     const HOST_SECRET_PIN = "9999";
 
+    let allGuests = [];
     let allDishes = [];
     let allDrinks = [];
     let allDietary = [];
@@ -461,11 +481,11 @@
       document.getElementById('filterSide').innerText = t.catSide;
       document.getElementById('filterDessert').innerText = t.catDessert;
       document.getElementById('filterOther').innerText = t.catOther;
+      document.getElementById('hostGuestsListTitle').innerText = t.hostGuestsListTitle;
       document.getElementById('hostDishesTitle').innerText = t.hostDishesTitle;
       document.getElementById('hostDietaryTitle').innerText = t.hostDietaryTitle;
       document.getElementById('hostDrinksTitle').innerText = t.hostDrinksTitle;
 
-      // Update all existing dish category dropdown options
       document.querySelectorAll('.dish-category-select').forEach(select => {
         select.options[0].text = t.catStarter;
         select.options[1].text = t.catMain;
@@ -499,7 +519,6 @@
       el.classList.remove('hidden');
     }
 
-    // Dynamic Dish Rows
     function addDishRow(category = 'starter', description = '') {
       const container = document.getElementById('dishesInputContainer');
       const t = i18n[currentLang];
@@ -529,7 +548,6 @@
     function removeDishRow(rowId) {
       const row = document.getElementById(rowId);
       if (row) row.remove();
-      // Ensure at least one empty row remains
       const container = document.getElementById('dishesInputContainer');
       if (container.querySelectorAll('.dish-item-row').length === 0) {
         addDishRow();
@@ -549,7 +567,6 @@
       return dishes;
     }
 
-    // Auto-login from LocalStorage
     function checkStoredAuth() {
       const savedAuth = localStorage.getItem('rh_dinner_guest_auth');
       if (savedAuth) {
@@ -578,7 +595,6 @@
       const userId = `${rawName.toLowerCase().replace(/\s+/g, '_')}_${pin}`;
       activeUser = { name: rawName, pin: pin, id: userId };
 
-      // Store credentials locally for future visits
       localStorage.setItem('rh_dinner_guest_auth', JSON.stringify({ name: rawName, pin: pin }));
 
       const btn = document.getElementById('btnContinue');
@@ -614,7 +630,6 @@
             document.querySelector('input[name="partySize"][value="1"]').checked = true;
           }
 
-          // Populate Dishes (supports new array format and legacy single object format)
           if (Array.isArray(data.dishes) && data.dishes.length > 0) {
             data.dishes.forEach(d => addDishRow(d.category, d.description));
           } else if (data.dish && data.dish.description) {
@@ -762,6 +777,7 @@
       let total = 0;
       let attendingCount = 0;
       let declinedCount = 0;
+      allGuests = [];
       allDishes = [];
       allDrinks = [];
       allDietary = [];
@@ -769,10 +785,17 @@
       querySnapshot.forEach((doc) => {
         total++;
         const item = doc.data();
+        
+        allGuests.push({
+          name: item.name,
+          attending: item.attending,
+          partySize: item.partySize || 1,
+          updatedAt: item.updatedAt || null
+        });
+
         if (item.attending) {
           attendingCount += (item.partySize || 1);
           
-          // Support both new multi-dishes array and legacy single dish
           if (Array.isArray(item.dishes)) {
             item.dishes.forEach(d => {
               if (d.description) {
@@ -818,6 +841,43 @@
       const searchTerm = document.getElementById('hostSearchInput').value.trim().toLowerCase();
       const categoryFilter = document.getElementById('hostCategoryFilter').value;
 
+      // Filter Guests
+      const filteredGuests = allGuests.filter(g =>
+        !searchTerm || g.name.toLowerCase().includes(searchTerm)
+      );
+
+      // Render Guests Full List
+      const guestsContainer = document.getElementById('guestsFullList');
+      if (allGuests.length === 0) {
+        guestsContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4 bg-slate-50 rounded-xl border border-slate-200">${escapeHtml(t.noGuests)}</p>`;
+      } else if (filteredGuests.length === 0) {
+        guestsContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4 bg-slate-50 rounded-xl border border-slate-200">${escapeHtml(t.noResults)}</p>`;
+      } else {
+        guestsContainer.innerHTML = filteredGuests.map(g => {
+          let badge = '';
+          if (!g.attending) {
+            badge = `<span class="text-xs px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 font-semibold">${escapeHtml(t.statusDeclined)}</span>`;
+          } else if (g.partySize === 2) {
+            badge = `<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-semibold">${escapeHtml(t.statusAttendingPlusOne)}</span>`;
+          } else {
+            badge = `<span class="text-xs px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 font-semibold">${escapeHtml(t.statusAttendingSolo)}</span>`;
+          }
+
+          const timeFormatted = g.updatedAt ? new Date(g.updatedAt).toLocaleTimeString(currentLang === 'he' ? 'he-IL' : 'en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+
+          return `
+            <div class="p-3 bg-slate-50 border rounded-xl flex justify-between items-center gap-2">
+              <div>
+                <span class="font-bold text-slate-800 text-base">${escapeHtml(g.name)}</span>
+                ${timeFormatted ? `<span class="text-xs text-slate-400 block">${t.lastUpdatedPrefix}${timeFormatted}</span>` : ''}
+              </div>
+              <div>${badge}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Filter Dishes
       const filteredDishes = allDishes.filter(d =>
         (!searchTerm || d.guest.toLowerCase().includes(searchTerm) || d.description.toLowerCase().includes(searchTerm)) &&
         (categoryFilter === 'all' || d.category === categoryFilter)
@@ -829,14 +889,15 @@
         !searchTerm || die.guest.toLowerCase().includes(searchTerm) || die.note.toLowerCase().includes(searchTerm)
       );
 
+      // Render Dishes
       const dishesContainer = document.getElementById('dishesList');
       if (allDishes.length === 0) {
-        dishesContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4">${escapeHtml(t.noDishes)}</p>`;
+        dishesContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4 bg-slate-50 rounded-xl border border-slate-200">${escapeHtml(t.noDishes)}</p>`;
       } else if (filteredDishes.length === 0) {
-        dishesContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4">${escapeHtml(t.noResults)}</p>`;
+        dishesContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4 bg-slate-50 rounded-xl border border-slate-200">${escapeHtml(t.noResults)}</p>`;
       } else {
         dishesContainer.innerHTML = filteredDishes.map(d => `
-          <div class="p-3 bg-slate-50 border rounded-lg flex justify-between items-start gap-2">
+          <div class="p-3 bg-slate-50 border rounded-xl flex justify-between items-start gap-2">
             <div class="flex-1">
               <span class="font-bold text-slate-800">${escapeHtml(d.guest)}:</span>
               <span class="text-slate-600 block mt-0.5">${escapeHtml(d.description)}</span>
@@ -846,6 +907,7 @@
         `).join('');
       }
 
+      // Render Dietary
       const dietaryContainer = document.getElementById('dietaryList');
       if (allDietary.length === 0) {
         dietaryContainer.innerHTML = `<p class="text-slate-400 italic text-center py-2">${escapeHtml(t.noDietary)}</p>`;
@@ -860,6 +922,7 @@
         `).join('');
       }
 
+      // Render Soft Drinks
       const drinksContainer = document.getElementById('drinksList');
       if (allDrinks.length === 0) {
         drinksContainer.innerHTML = `<p class="text-slate-400 italic text-center py-2">${escapeHtml(t.noDrinks)}</p>`;
