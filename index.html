@@ -15,14 +15,12 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col items-center p-4 md:p-8">
 
-  <!-- Header & Language Switcher - UPDATED FOR MOBILE -->
+  <!-- Header & Language Switcher -->
   <header class="w-full max-w-xl flex flex-col items-center mb-6 gap-3 md:flex-row md:justify-between md:gap-0">
-    <!-- Title Section -->
     <div class="flex items-center gap-2 text-center md:text-right">
       <span class="text-3xl">🍯🍎</span>
       <h1 id="appTitle" class="text-xl md:text-2xl font-bold text-slate-800">ארוחת ראש השנה 2026</h1>
     </div>
-    <!-- Buttons Section - Stacked on Mobile, Row on Desktop -->
     <div class="flex items-center gap-2 w-full justify-center md:w-auto md:justify-end">
       <button id="langToggleBtn" onclick="toggleLanguage()" class="flex-1 md:flex-none px-4 py-1.5 bg-white border border-slate-300 rounded-full text-sm font-semibold shadow-sm hover:bg-slate-100 transition whitespace-nowrap">
         English
@@ -46,7 +44,7 @@
         </div>
         <div>
           <label id="labelPin" class="block text-sm font-semibold text-slate-700 mb-1">קוד אישי (4 ספרות)</label>
-          <input type="tel" id="guestPin" required pattern="[0-9]{4}" maxlength="4" placeholder="1234" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-center tracking-widest text-lg font-bold text-base">
+          <input type="tel" id="guestPin" required pattern="[0-9]{4}" maxlength="4" placeholder="••••" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-center tracking-widest text-lg font-bold text-base">
         </div>
         <button type="submit" id="btnContinue" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-base">
           המשך לטופס
@@ -135,7 +133,7 @@
     </div>
   </main>
 
-  <!-- Host Dashboard Modal - UPDATED FOR MOBILE -->
+  <!-- Host Dashboard Modal -->
   <div id="hostModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-2 sm:p-4 hidden">
     <div class="bg-white w-full max-w-2xl rounded-2xl p-5 sm:p-6 max-h-[95vh] overflow-y-auto shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3 mb-4">
@@ -145,8 +143,8 @@
 
       <!-- Host Login -->
       <div id="hostAuthDiv" class="space-y-4">
-        <p id="hostPassPrompt" class="text-sm text-slate-600">הזן קוד מארח לצפייה:</p>
-        <input type="password" id="hostPassInput" placeholder="9999" class="w-full px-4 py-2 border rounded-xl text-base text-center tracking-widest font-bold">
+        <p id="hostPassPrompt" class="text-sm text-slate-600">הזן קוד גישה למארח:</p>
+        <input type="password" id="hostPassInput" placeholder="••••" class="w-full px-4 py-2 border rounded-xl text-base text-center tracking-widest font-bold">
         <button onclick="verifyHostPass()" id="btnHostEnter" class="w-full py-2.5 bg-amber-500 text-white font-bold rounded-xl text-base">כניסה לדשבורד</button>
         <p id="hostError" class="text-red-500 text-xs font-semibold text-center hidden">קוד שגוי</p>
       </div>
@@ -186,7 +184,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
-    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCT7Olb7XztZl-rCQG-VCmWQ53GVCuNXU4",
       authDomain: "rh-dinner-2026.firebaseapp.com",
@@ -199,7 +196,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Make database methods globally accessible
     window.db = db;
     window.doc = doc;
     window.getDoc = getDoc;
@@ -209,7 +205,6 @@
   </script>
 
   <script>
-    // --- Internationalization (i18n) Translations ---
     const i18n = {
       he: {
         dir: 'rtl',
@@ -245,8 +240,8 @@
         btnSave: 'שמור אישור הגעה',
         savedSuccess: 'הנתונים נשמרו בהצלחה! 🍯',
         hostModalTitle: '👑 דשבורד מארח',
-        hostPassPrompt: 'הזן קוד מארח לצפייה:',
-        hostPassPlaceholder: '9999',
+        hostPassPrompt: 'הזן קוד גישה למארח:',
+        hostPassPlaceholder: '••••',
         btnHostEnter: 'כניסה לדשבורד',
         hostError: 'קוד שגוי',
         statTotalGuests: 'סך רשומים',
@@ -290,8 +285,8 @@
         btnSave: 'Save RSVP',
         savedSuccess: 'Saved successfully! 🍯',
         hostModalTitle: '👑 Host Dashboard',
-        hostPassPrompt: 'Enter host code:',
-        hostPassPlaceholder: '9999',
+        hostPassPrompt: 'Enter host PIN:',
+        hostPassPlaceholder: '••••',
         btnHostEnter: 'Enter Dashboard',
         hostError: 'Invalid code',
         statTotalGuests: 'Total Registered',
@@ -354,7 +349,6 @@
       document.getElementById('hostDishesTitle').innerText = t.hostDishesTitle;
       document.getElementById('hostDrinksTitle').innerText = t.hostDrinksTitle;
 
-      // Update Select Options
       const select = document.getElementById('dishCategory');
       select.options[0].text = t.catStarter;
       select.options[1].text = t.catMain;
@@ -363,7 +357,6 @@
       select.options[4].text = t.catOther;
     }
 
-    // Auth & Data Fetching
     async function handleAuthSubmit(e) {
       e.preventDefault();
       const rawName = document.getElementById('guestName').value.trim();
@@ -378,14 +371,12 @@
       document.getElementById('authStep').classList.add('hidden');
       document.getElementById('rsvpStep').classList.remove('hidden');
 
-      // Check if user already submitted data
       try {
         const docRef = window.doc(window.db, "rsvps", userId);
         const docSnap = await window.getDoc(docRef);
 
         if (docSnap.exists()) {
           const data = docSnap.data();
-          // Populate fields
           if (data.attending === false) {
             document.querySelector('input[name="attending"][value="no"]').checked = true;
             toggleFormFields(false);
@@ -410,7 +401,6 @@
             document.getElementById('softDrinkChoice').value = data.alcohol.preferredSoftDrink || '';
           }
         } else {
-            // New user, reset form
             document.querySelector('input[name="attending"][value="yes"]').checked = true;
             toggleFormFields(true);
             document.querySelector('input[name="partySize"][value="1"]').checked = true;
@@ -441,7 +431,6 @@
       }
     }
 
-    // Save RSVP to Firestore
     async function handleFormSubmit(e) {
       e.preventDefault();
       if (!activeUser) return;
@@ -478,7 +467,6 @@
       }
     }
 
-    // Host View Logic
     function openHostModal() {
       document.getElementById('hostModal').classList.remove('hidden');
       document.getElementById('hostAuthDiv').classList.remove('hidden');
@@ -539,7 +527,6 @@
         document.getElementById('hostCountAttending').innerText = attendingCount;
         document.getElementById('hostCountDeclined').innerText = declinedCount;
 
-        // Render Dishes
         const dishesContainer = document.getElementById('dishesList');
         if (dishes.length === 0) {
           dishesContainer.innerHTML = '<p class="text-slate-400 italic text-center py-4">טרם הוזנו מנות</p>';
@@ -555,7 +542,6 @@
           `).join('');
         }
 
-        // Render Soft Drinks
         const drinksContainer = document.getElementById('drinksList');
         if (drinks.length === 0) {
           drinksContainer.innerHTML = '<p class="text-slate-400 italic text-center py-2">אין בקשות כרגע</p>';
