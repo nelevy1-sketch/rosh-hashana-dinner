@@ -15,17 +15,19 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col items-center p-4 md:p-8">
 
-  <!-- Header & Language Switcher -->
-  <header class="w-full max-w-xl flex justify-between items-center mb-6">
-    <div class="flex items-center gap-2">
+  <!-- Header & Language Switcher - UPDATED FOR MOBILE -->
+  <header class="w-full max-w-xl flex flex-col items-center mb-6 gap-3 md:flex-row md:justify-between md:gap-0">
+    <!-- Title Section -->
+    <div class="flex items-center gap-2 text-center md:text-right">
       <span class="text-3xl">🍯🍎</span>
       <h1 id="appTitle" class="text-xl md:text-2xl font-bold text-slate-800">ארוחת ראש השנה 2026</h1>
     </div>
-    <div class="flex items-center gap-2">
-      <button id="langToggleBtn" onclick="toggleLanguage()" class="px-3 py-1 bg-white border border-slate-300 rounded-full text-sm font-semibold shadow-sm hover:bg-slate-100 transition">
+    <!-- Buttons Section - Stacked on Mobile, Row on Desktop -->
+    <div class="flex items-center gap-2 w-full justify-center md:w-auto md:justify-end">
+      <button id="langToggleBtn" onclick="toggleLanguage()" class="flex-1 md:flex-none px-4 py-1.5 bg-white border border-slate-300 rounded-full text-sm font-semibold shadow-sm hover:bg-slate-100 transition whitespace-nowrap">
         English
       </button>
-      <button onclick="openHostModal()" class="px-3 py-1 bg-amber-500 text-white rounded-full text-sm font-semibold shadow-sm hover:bg-amber-600 transition">
+      <button onclick="openHostModal()" class="flex-1 md:flex-none px-4 py-1.5 bg-amber-500 text-white rounded-full text-sm font-semibold shadow-sm hover:bg-amber-600 transition whitespace-nowrap">
         👑 <span id="hostBtnText">מארח</span>
       </button>
     </div>
@@ -40,13 +42,13 @@
       <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
         <div>
           <label id="labelName" class="block text-sm font-semibold text-slate-700 mb-1">שם מלא</label>
-          <input type="text" id="guestName" required placeholder="לדוגמה: דני ישראלי" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none">
+          <input type="text" id="guestName" required placeholder="לדוגמה: דני ישראלי" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base">
         </div>
         <div>
           <label id="labelPin" class="block text-sm font-semibold text-slate-700 mb-1">קוד אישי (4 ספרות)</label>
-          <input type="tel" id="guestPin" required pattern="[0-9]{4}" maxlength="4" placeholder="1234" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-center tracking-widest text-lg font-bold">
+          <input type="tel" id="guestPin" required pattern="[0-9]{4}" maxlength="4" placeholder="1234" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-center tracking-widest text-lg font-bold text-base">
         </div>
-        <button type="submit" id="btnContinue" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow">
+        <button type="submit" id="btnContinue" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-base">
           המשך לטופס
         </button>
       </form>
@@ -54,12 +56,12 @@
 
     <!-- Step 2: RSVP & Potluck Details Form -->
     <div id="rsvpStep" class="hidden">
-      <div class="flex justify-between items-center border-b pb-4 mb-6">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b pb-4 mb-6 gap-2">
         <div>
           <h2 class="text-lg font-bold text-slate-900"><span id="greetingText">שלום</span>, <span id="currentGuestName" class="text-amber-600"></span>!</h2>
           <p id="formSubtitle" class="text-xs text-slate-400">ניתן לעדכן את הפרטים בכל עת</p>
         </div>
-        <button onclick="logoutGuest()" id="btnSwitchUser" class="text-xs text-slate-500 hover:text-slate-700 underline">החלף משתמש</button>
+        <button onclick="logoutGuest()" id="btnSwitchUser" class="text-sm text-slate-500 hover:text-slate-700 underline text-right sm:text-left">החלף משתמש</button>
       </div>
 
       <form onsubmit="handleFormSubmit(event)" class="space-y-6">
@@ -69,11 +71,11 @@
           <div class="grid grid-cols-2 gap-3">
             <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
               <input type="radio" name="attending" value="yes" checked onchange="toggleFormFields(true)" class="hidden">
-              <span id="radioYes" class="font-bold text-slate-800">🎉 מגיע/ה בשמחה</span>
+              <span id="radioYes" class="font-bold text-slate-800 text-sm md:text-base">🎉 מגיע/ה</span>
             </label>
             <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
               <input type="radio" name="attending" value="no" onchange="toggleFormFields(false)" class="hidden">
-              <span id="radioNo" class="font-bold text-slate-800">😢 לא מתאפשר לי</span>
+              <span id="radioNo" class="font-bold text-slate-800 text-sm md:text-base">😢 לא מגיע/ה</span>
             </label>
           </div>
         </div>
@@ -85,11 +87,11 @@
             <div class="grid grid-cols-2 gap-3">
               <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
                 <input type="radio" name="partySize" value="1" checked class="hidden">
-                <span id="partySolo" class="font-semibold text-sm">👤 מגיע/ה לבד (1)</span>
+                <span id="partySolo" class="font-semibold text-sm">👤 לבד (1)</span>
               </label>
               <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
                 <input type="radio" name="partySize" value="2" class="hidden">
-                <span id="partyPlusOne" class="font-semibold text-sm">👥 מגיע/ה עם +1 (2)</span>
+                <span id="partyPlusOne" class="font-semibold text-sm">👥 עם +1 (2)</span>
               </label>
             </div>
           </div>
@@ -97,7 +99,7 @@
           <!-- Dish Selection -->
           <div>
             <label id="labelDishCategory" class="block text-sm font-semibold text-slate-700 mb-1">מה תביאו לארוחה?</label>
-            <select id="dishCategory" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none mb-3">
+            <select id="dishCategory" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none mb-3 text-base">
               <option value="starter">🥗 מנה ראשונה / סלט</option>
               <option value="main">🍲 מנה עיקרית</option>
               <option value="side">🍚 תוספת</option>
@@ -105,27 +107,27 @@
               <option value="other">🥨 נשנוש / אחר</option>
             </select>
             <label id="labelDishDetails" class="block text-xs font-medium text-slate-500 mb-1">פירוט המנה (מלל חופשי):</label>
-            <textarea id="dishDescription" rows="2" placeholder="למשל: סלט חגיגי עם רימונים ותפוחים" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm"></textarea>
+            <textarea id="dishDescription" rows="2" placeholder="למשל: סלט חגיגי עם רימונים ותפוחים" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base"></textarea>
           </div>
 
           <!-- Alcohol & Soft Drinks -->
           <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
             <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">שתייה והעדפות 🍷</label>
             <div class="space-y-2">
-              <label class="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-700">
-                <input type="checkbox" id="drinksAlcohol" checked onchange="toggleSoftDrinkField()" class="w-4 h-4 text-amber-600 rounded">
-                <span id="checkboxDrinksAlcohol">שותה אלכוהול (יין/בירה/וכו')</span>
+              <label class="flex items-center gap-2 cursor-pointer text-base font-medium text-slate-700">
+                <input type="checkbox" id="drinksAlcohol" checked class="w-5 h-5 text-amber-600 rounded">
+                <span id="checkboxDrinksAlcohol">שותה אלכוהול</span>
               </label>
             </div>
 
             <div id="nonAlcoholField" class="pt-2 border-t border-slate-200">
-              <label id="labelSoftDrink" class="block text-xs font-semibold text-slate-700 mb-1">אם לא שותים אלכוהול, איזה שתייה אחת תעדיפו שנכין עבורכם?</label>
-              <input type="text" id="softDrinkChoice" placeholder="למשל: זירו, סודה, מיץ תפוחים טבעי..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm bg-white">
+              <label id="labelSoftDrink" class="block text-xs font-semibold text-slate-700 mb-1">אם לא שותים אלכוהול, איזה שתייה אחת תעדיפו?</label>
+              <input type="text" id="softDrinkChoice" placeholder="למשל: זירו, סודה, מיץ..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base bg-white">
             </div>
           </div>
         </div>
 
-        <button type="submit" id="btnSave" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow">
+        <button type="submit" id="btnSave" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-lg">
           שמור אישור הגעה
         </button>
         <p id="saveStatus" class="text-center text-sm font-semibold text-emerald-600 hidden"></p>
@@ -133,47 +135,47 @@
     </div>
   </main>
 
-  <!-- Host Dashboard Modal -->
-  <div id="hostModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-2xl rounded-2xl p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+  <!-- Host Dashboard Modal - UPDATED FOR MOBILE -->
+  <div id="hostModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-2 sm:p-4 hidden">
+    <div class="bg-white w-full max-w-2xl rounded-2xl p-5 sm:p-6 max-h-[95vh] overflow-y-auto shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3 mb-4">
-        <h2 id="hostModalTitle" class="text-xl font-bold text-slate-900">👑 דשבורד מארח</h2>
-        <button onclick="closeHostModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold">&times;</button>
+        <h2 id="hostModalTitle" class="text-lg sm:text-xl font-bold text-slate-900">👑 דשבורד מארח</h2>
+        <button onclick="closeHostModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold p-1">&times;</button>
       </div>
 
       <!-- Host Login -->
       <div id="hostAuthDiv" class="space-y-4">
-        <p id="hostPassPrompt" class="text-sm text-slate-600">הזן קוד מארח כדי לצפות בכל האישורים:</p>
-        <input type="password" id="hostPassInput" placeholder="קוד מנהל (ברירת מחדל: 9999)" class="w-full px-4 py-2 border rounded-xl">
-        <button onclick="verifyHostPass()" id="btnHostEnter" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">כניסה לדשבורד</button>
-        <p id="hostError" class="text-red-500 text-xs font-semibold hidden">קוד שגוי</p>
+        <p id="hostPassPrompt" class="text-sm text-slate-600">הזן קוד מארח לצפייה:</p>
+        <input type="password" id="hostPassInput" placeholder="9999" class="w-full px-4 py-2 border rounded-xl text-base text-center tracking-widest font-bold">
+        <button onclick="verifyHostPass()" id="btnHostEnter" class="w-full py-2.5 bg-amber-500 text-white font-bold rounded-xl text-base">כניסה לדשבורד</button>
+        <p id="hostError" class="text-red-500 text-xs font-semibold text-center hidden">קוד שגוי</p>
       </div>
 
       <!-- Host Data View -->
       <div id="hostDataDiv" class="hidden space-y-6">
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-center">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-center">
           <div class="bg-amber-50 p-3 rounded-xl border border-amber-200">
-            <span class="text-xs text-amber-700 font-semibold" id="statTotalGuests">סך אורחים</span>
-            <p id="hostCountGuests" class="text-2xl font-bold text-amber-900">0</p>
+            <span class="text-xs text-amber-700 font-semibold whitespace-nowrap" id="statTotalGuests">סך רשומים</span>
+            <p id="hostCountGuests" class="text-xl sm:text-2xl font-bold text-amber-900">0</p>
           </div>
           <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200">
-            <span class="text-xs text-emerald-700 font-semibold" id="statAttending">מאשרים (כולל +1)</span>
-            <p id="hostCountAttending" class="text-2xl font-bold text-emerald-900">0</p>
+            <span class="text-xs text-emerald-700 font-semibold whitespace-nowrap" id="statAttending">מאשרים (עם +1)</span>
+            <p id="hostCountAttending" class="text-xl sm:text-2xl font-bold text-emerald-900">0</p>
           </div>
           <div class="bg-rose-50 p-3 rounded-xl border border-rose-200 col-span-2 sm:col-span-1">
-            <span class="text-xs text-rose-700 font-semibold" id="statDeclined">לא מגיעים</span>
-            <p id="hostCountDeclined" class="text-2xl font-bold text-rose-900">0</p>
+            <span class="text-xs text-rose-700 font-semibold whitespace-nowrap" id="statDeclined">לא מגיעים</span>
+            <p id="hostCountDeclined" class="text-xl sm:text-2xl font-bold text-rose-900">0</p>
           </div>
         </div>
 
         <div>
-          <h3 id="hostDishesTitle" class="font-bold text-slate-800 mb-2">🍽️ חלוקת מנות שהאורחים מביאים</h3>
-          <div id="dishesList" class="space-y-2 text-sm"></div>
+          <h3 id="hostDishesTitle" class="font-bold text-slate-800 mb-2.5 text-base">🍽️ חלוקת מנות</h3>
+          <div id="dishesList" class="space-y-2.5 text-sm"></div>
         </div>
 
         <div>
-          <h3 id="hostDrinksTitle" class="font-bold text-slate-800 mb-2">🥤 בקשות שתייה למי שלא שותה אלכוהול</h3>
-          <div id="drinksList" class="space-y-1 text-sm bg-slate-50 p-3 rounded-xl border border-slate-200"></div>
+          <h3 id="hostDrinksTitle" class="font-bold text-slate-800 mb-2 text-base">🥤 בקשות לשתייה קלה</h3>
+          <div id="drinksList" class="space-y-1.5 text-sm bg-slate-50 p-3 rounded-xl border border-slate-200"></div>
         </div>
       </div>
     </div>
@@ -214,7 +216,7 @@
         appTitle: 'ארוחת ראש השנה 2026',
         hostBtnText: 'מארח',
         loginTitle: 'ברוכים הבאים!',
-        loginSubtitle: 'הזינו את שמכם וקוד בן 4 ספרות (לזיהוי ועריכה בעתיד):',
+        loginSubtitle: 'הזינו את שמכם וקוד בן 4 ספרות:',
         labelName: 'שם מלא',
         namePlaceholder: 'לדוגמה: דני ישראלי',
         labelPin: 'קוד אישי (4 ספרות)',
@@ -223,11 +225,11 @@
         formSubtitle: 'ניתן לעדכן את הפרטים בכל עת',
         btnSwitchUser: 'החלף משתמש',
         labelAttendance: 'האם תגיעו לחגוג איתנו?',
-        radioYes: '🎉 מגיע/ה בשמחה',
-        radioNo: '😢 לא מתאפשר לי',
+        radioYes: '🎉 מגיע/ה',
+        radioNo: '😢 לא מגיע/ה',
         labelPartySize: 'מגיעים לבד או עם פלוס 1?',
-        partySolo: '👤 מגיע/ה לבד (1)',
-        partyPlusOne: '👥 מגיע/ה עם +1 (2)',
+        partySolo: '👤 לבד (1)',
+        partyPlusOne: '👥 עם +1 (2)',
         labelDishCategory: 'מה תביאו לארוחה?',
         catStarter: '🥗 מנה ראשונה / סלט',
         catMain: '🍲 מנה עיקרית',
@@ -237,21 +239,21 @@
         labelDishDetails: 'פירוט המנה (מלל חופשי):',
         dishPlaceholder: 'למשל: סלט חגיגי עם רימונים ותפוחים',
         labelAlcoholSection: 'שתייה והעדפות 🍷',
-        checkboxDrinksAlcohol: 'שותה אלכוהול (יין/בירה/וכו\')',
-        labelSoftDrink: 'אם לא שותים אלכוהול, איזה שתייה אחת תעדיפו שנכין עבורכם?',
-        softDrinkPlaceholder: 'למשל: זירו, סודה, מיץ תפוחים טבעי...',
+        checkboxDrinksAlcohol: 'שותה אלכוהול',
+        labelSoftDrink: 'אם לא שותים אלכוהול, איזה שתייה אחת תעדיפו?',
+        softDrinkPlaceholder: 'למשל: זירו, סודה, מיץ...',
         btnSave: 'שמור אישור הגעה',
-        savedSuccess: 'הנתונים נשמרו בהצלחה! תודה רבה 🍯',
+        savedSuccess: 'הנתונים נשמרו בהצלחה! 🍯',
         hostModalTitle: '👑 דשבורד מארח',
-        hostPassPrompt: 'הזן קוד מארח כדי לצפות בכל האישורים:',
-        hostPassPlaceholder: 'קוד מנהל (ברירת מחדל: 9999)',
+        hostPassPrompt: 'הזן קוד מארח לצפייה:',
+        hostPassPlaceholder: '9999',
         btnHostEnter: 'כניסה לדשבורד',
         hostError: 'קוד שגוי',
         statTotalGuests: 'סך רשומים',
-        statAttending: 'מאשרים (כולל +1)',
+        statAttending: 'מאשרים (עם +1)',
         statDeclined: 'לא מגיעים',
-        hostDishesTitle: '🍽️ חלוקת מנות שהאורחים מביאים',
-        hostDrinksTitle: '🥤 בקשות שתייה למי שלא שותה אלכוהול',
+        hostDishesTitle: '🍽️ חלוקת מנות',
+        hostDrinksTitle: '🥤 בקשות לשתייה קלה',
         langBtnText: 'English'
       },
       en: {
@@ -259,7 +261,7 @@
         appTitle: 'Rosh Hashana Dinner 2026',
         hostBtnText: 'Host View',
         loginTitle: 'Welcome!',
-        loginSubtitle: 'Enter your name and a 4-digit PIN (to sign in or edit later):',
+        loginSubtitle: 'Enter your name and a 4-digit PIN:',
         labelName: 'Full Name',
         namePlaceholder: 'e.g. Alex Cohen',
         labelPin: 'Personal PIN (4 digits)',
@@ -268,8 +270,8 @@
         formSubtitle: 'You can update your response at any time',
         btnSwitchUser: 'Switch user',
         labelAttendance: 'Will you join the dinner?',
-        radioYes: '🎉 Attending with pleasure',
-        radioNo: '😢 Can\'t make it',
+        radioYes: '🎉 Attending',
+        radioNo: '😢 Not Attending',
         labelPartySize: 'Coming alone or +1?',
         partySolo: '👤 Solo (1)',
         partyPlusOne: '👥 With +1 (2)',
@@ -280,30 +282,30 @@
         catDessert: '🍰 Dessert / Cake',
         catOther: '🥨 Snacks / Other',
         labelDishDetails: 'Dish details (free text):',
-        dishPlaceholder: 'e.g., Pomegranate salad with roasted pecans',
+        dishPlaceholder: 'e.g., Pomegranate salad with pecans',
         labelAlcoholSection: 'Drinks & Preferences 🍷',
-        checkboxDrinksAlcohol: 'Drinks alcohol (Wine/Beer/Cocktails)',
-        labelSoftDrink: 'If non-alcoholic, which single drink would you like us to provide?',
-        softDrinkPlaceholder: 'e.g., Diet Coke, Sparkling Water, Apple Cider...',
+        checkboxDrinksAlcohol: 'Drinks alcohol',
+        labelSoftDrink: 'If non-alcoholic, which drink would you like?',
+        softDrinkPlaceholder: 'e.g., Diet Coke, Sparkling Water, Juice...',
         btnSave: 'Save RSVP',
-        savedSuccess: 'Your RSVP was saved successfully! 🍯',
+        savedSuccess: 'Saved successfully! 🍯',
         hostModalTitle: '👑 Host Dashboard',
-        hostPassPrompt: 'Enter host code to view all responses:',
-        hostPassPlaceholder: 'Host PIN (default: 9999)',
+        hostPassPrompt: 'Enter host code:',
+        hostPassPlaceholder: '9999',
         btnHostEnter: 'Enter Dashboard',
         hostError: 'Invalid code',
         statTotalGuests: 'Total Registered',
-        statAttending: 'Attending (incl. +1)',
+        statAttending: 'Attending (+1s)',
         statDeclined: 'Declined',
-        hostDishesTitle: '🍽️ Dishes Guests Are Bringing',
-        hostDrinksTitle: '🥤 Drink Requests for Non-Alcohol Drinkers',
+        hostDishesTitle: '🍽️ Dishes',
+        hostDrinksTitle: '🥤 Soft Drink Requests',
         langBtnText: 'עברית'
       }
     };
 
     let currentLang = 'he';
     let activeUser = null;
-    const HOST_SECRET_PIN = "9999"; // Can be modified by the host
+    const HOST_SECRET_PIN = "9999"; 
 
     function toggleLanguage() {
       currentLang = currentLang === 'he' ? 'en' : 'he';
@@ -407,6 +409,15 @@
             document.getElementById('drinksAlcohol').checked = data.alcohol.drinksAlcohol;
             document.getElementById('softDrinkChoice').value = data.alcohol.preferredSoftDrink || '';
           }
+        } else {
+            // New user, reset form
+            document.querySelector('input[name="attending"][value="yes"]').checked = true;
+            toggleFormFields(true);
+            document.querySelector('input[name="partySize"][value="1"]').checked = true;
+            document.getElementById('dishCategory').value = 'starter';
+            document.getElementById('dishDescription').value = '';
+            document.getElementById('drinksAlcohol').checked = true;
+            document.getElementById('softDrinkChoice').value = '';
         }
       } catch (err) {
         console.error("Error reading document:", err);
@@ -418,6 +429,7 @@
       document.getElementById('rsvpStep').classList.add('hidden');
       document.getElementById('authStep').classList.remove('hidden');
       document.getElementById('saveStatus').classList.add('hidden');
+      document.getElementById('guestPin').value = '';
     }
 
     function toggleFormFields(isAttending) {
@@ -427,10 +439,6 @@
       } else {
         fields.classList.add('hidden');
       }
-    }
-
-    function toggleSoftDrinkField() {
-      // Optional toggle visual indicator
     }
 
     // Save RSVP to Firestore
@@ -534,15 +542,15 @@
         // Render Dishes
         const dishesContainer = document.getElementById('dishesList');
         if (dishes.length === 0) {
-          dishesContainer.innerHTML = '<p class="text-slate-400 italic">טרם הוזנו מנות</p>';
+          dishesContainer.innerHTML = '<p class="text-slate-400 italic text-center py-4">טרם הוזנו מנות</p>';
         } else {
           dishesContainer.innerHTML = dishes.map(d => `
-            <div class="p-2.5 bg-slate-50 border rounded-lg flex justify-between items-center">
-              <div>
+            <div class="p-3 bg-slate-50 border rounded-lg flex justify-between items-start gap-2">
+              <div class="flex-1">
                 <span class="font-bold text-slate-800">${d.guest}:</span>
-                <span class="text-slate-600">${d.description}</span>
+                <span class="text-slate-600 block mt-0.5">${d.description}</span>
               </div>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold">${d.category}</span>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-semibold whitespace-nowrap mt-0.5">${d.category}</span>
             </div>
           `).join('');
         }
@@ -550,12 +558,12 @@
         // Render Soft Drinks
         const drinksContainer = document.getElementById('drinksList');
         if (drinks.length === 0) {
-          drinksContainer.innerHTML = '<p class="text-slate-400 italic">אין בקשות מיוחדות כרגע</p>';
+          drinksContainer.innerHTML = '<p class="text-slate-400 italic text-center py-2">אין בקשות כרגע</p>';
         } else {
           drinksContainer.innerHTML = drinks.map(dr => `
-            <div class="flex justify-between py-1 border-b last:border-0">
-              <span class="font-semibold text-slate-800">${dr.guest} ${!dr.drinksAlcohol ? '(🚫 אלכוהול)' : ''}</span>
-              <span class="text-slate-600">${dr.softDrink}</span>
+            <div class="flex justify-between py-1.5 border-b last:border-0 items-baseline gap-2">
+              <span class="font-semibold text-slate-800">${dr.guest} ${!dr.drinksAlcohol ? '<span class="text-xs text-slate-500">(🚫 אלכוהול)</span>' : ''}</span>
+              <span class="text-slate-600 text-right">${dr.softDrink}</span>
             </div>
           `).join('');
         }
