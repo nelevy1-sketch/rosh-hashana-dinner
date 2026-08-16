@@ -44,8 +44,10 @@
       </div>
     </header>
 
-    <!-- Step 1: Login / Identifier Card -->
-    <main class="w-full bg-white rounded-2xl shadow-lg border border-slate-100 p-6 md:p-8">
+    <!-- Main Card -->
+    <main class="w-full bg-white rounded-2xl shadow-lg border border-slate-100 p-6 md:p-8 relative">
+      
+      <!-- Step 1: Login / Identifier Card -->
       <div id="authStep">
         <h2 id="loginTitle" class="text-lg font-bold text-slate-900 mb-1">ברוכים הבאים!</h2>
         <p id="loginSubtitle" class="text-sm text-slate-500 mb-6">הזינו את שמכם וקוד בן 4 ספרות (לזיהוי ועריכה בעתיד):</p>
@@ -67,13 +69,19 @@
 
       <!-- Step 2: RSVP & Potluck Details Form -->
       <div id="rsvpStep" class="hidden">
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b pb-4 mb-6 gap-2">
+        
+        <!-- Sticky Header for Logged-In Guest -->
+        <div class="sticky top-0 z-20 bg-white/95 backdrop-blur-sm -mx-6 md:-mx-8 -mt-6 md:-mt-8 px-6 md:px-8 py-4 border-b border-slate-200 mb-6 flex justify-between items-center gap-2 rounded-t-2xl shadow-sm">
           <div>
-            <h2 class="text-lg font-bold text-slate-900"><span id="greetingText">שלום</span>, <span id="currentGuestName" class="text-amber-600"></span>!</h2>
-            <p id="formSubtitle" class="text-xs text-slate-400">ניתן לעדכן או לבטל את ההגעה בכל עת</p>
-            <p id="lastUpdatedText" class="text-xs text-slate-400 mt-0.5 hidden"></p>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+              <span id="greetingText">שלום</span>, <span id="currentGuestName" class="text-amber-600"></span>!
+            </h2>
+            <p id="formSubtitle" class="text-xs text-slate-400 hidden sm:block">ניתן לעדכן או לבטל את ההגעה בכל עת</p>
+            <p id="lastUpdatedText" class="text-[11px] text-slate-400 mt-0.5 hidden"></p>
           </div>
-          <button onclick="logoutGuest()" id="btnSwitchUser" class="text-sm text-slate-500 hover:text-slate-700 underline text-right sm:text-left">החלף משתמש</button>
+          <button onclick="logoutGuest()" id="btnSwitchUser" class="text-xs sm:text-sm text-slate-500 hover:text-slate-800 underline font-medium whitespace-nowrap">
+            החלף משתמש
+          </button>
         </div>
 
         <form onsubmit="handleFormSubmit(event)" class="space-y-6">
@@ -157,7 +165,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.4.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.5.0</span></span>
   </footer>
 
   <!-- Host Dashboard Modal -->
@@ -209,7 +217,7 @@
           </select>
         </div>
 
-        <!-- NEW: Full Guests List & RSVP Status -->
+        <!-- Full Guests List & RSVP Status -->
         <div>
           <h3 id="hostGuestsListTitle" class="font-bold text-slate-800 mb-2.5 text-base">👥 רשימת כל האורחים וסטטוס הגעה</h3>
           <div id="guestsFullList" class="space-y-2 text-sm bg-white"></div>
