@@ -70,7 +70,7 @@
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b pb-4 mb-6 gap-2">
           <div>
             <h2 class="text-lg font-bold text-slate-900"><span id="greetingText">שלום</span>, <span id="currentGuestName" class="text-amber-600"></span>!</h2>
-            <p id="formSubtitle" class="text-xs text-slate-400">ניתן לעדכן או לבטל את ההגעה בכל עת — פשוט היכנסו שוב עם אותו שם וקוד</p>
+            <p id="formSubtitle" class="text-xs text-slate-400">ניתן לעדכן או לבטל את ההגעה בכל עת</p>
             <p id="lastUpdatedText" class="text-xs text-slate-400 mt-0.5 hidden"></p>
           </div>
           <button onclick="logoutGuest()" id="btnSwitchUser" class="text-sm text-slate-500 hover:text-slate-700 underline text-right sm:text-left">החלף משתמש</button>
@@ -109,18 +109,17 @@
               </div>
             </div>
 
-            <!-- Dish Selection -->
+            <!-- Dynamic Multi-Dishes Section -->
             <div>
-              <label id="labelDishCategory" class="block text-sm font-semibold text-slate-700 mb-1">מה תביאו לארוחה?</label>
-              <select id="dishCategory" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none mb-3 text-base">
-                <option value="starter">🥗 מנה ראשונה / סלט</option>
-                <option value="main">🍲 מנה עיקרית</option>
-                <option value="side">🍚 תוספת</option>
-                <option value="dessert">🍰 קינוח / עוגה</option>
-                <option value="other">🥨 נשנוש / אחר</option>
-              </select>
-              <label id="labelDishDetails" class="block text-xs font-medium text-slate-500 mb-1">פירוט המנה (מלל חופשי):</label>
-              <textarea id="dishDescription" rows="2" placeholder="למשל: סלט חגיגי עם רימונים ותפוחים" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base"></textarea>
+              <div class="flex justify-between items-center mb-2">
+                <label id="labelDishesHeading" class="block text-sm font-semibold text-slate-700">מה תביאו לארוחה?</label>
+                <button type="button" onclick="addDishRow()" id="btnAddDish" class="text-xs font-bold text-amber-600 hover:text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg transition">
+                  ➕ הוסף מנה נוספת
+                </button>
+              </div>
+              <div id="dishesInputContainer" class="space-y-3">
+                <!-- Dishes inserted here via JS -->
+              </div>
             </div>
 
             <!-- Dietary Restrictions -->
@@ -158,7 +157,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.2.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.3.0</span></span>
   </footer>
 
   <!-- Host Dashboard Modal -->
@@ -198,7 +197,7 @@
 
         <!-- Search & Filter -->
         <div class="flex flex-col sm:flex-row gap-2">
-          <input type="text" id="hostSearchInput" oninput="renderHostLists()" placeholder="חיפוש לפי שם..." class="flex-1 px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm">
+          <input type="text" id="hostSearchInput" oninput="renderHostLists()" placeholder="חיפוש לפי שם או מנה..." class="flex-1 px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm">
           <select id="hostCategoryFilter" onchange="renderHostLists()" class="px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm">
             <option value="all" id="filterAll">כל הקטגוריות</option>
             <option value="starter" id="filterStarter">🥗 מנה ראשונה / סלט</option>
@@ -250,6 +249,11 @@
     window.setDoc = setDoc;
     window.collection = collection;
     window.getDocs = getDocs;
+
+    // Trigger auto-login on startup if credentials exist in localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+      checkStoredAuth();
+    });
   </script>
 
   <script>
@@ -259,14 +263,14 @@
         appTitle: 'ארוחת ראש השנה 2026',
         hostBtnText: 'מארח',
         loginTitle: 'ברוכים הבאים!',
-        loginSubtitle: 'הזינו את שמכם וקוד בן 4 ספרות:',
+        loginSubtitle: 'הזינו את שמכם וקוד בן 4 ספרות (לזיהוי ועריכה בעתיד):',
         labelName: 'שם מלא',
         namePlaceholder: 'לדוגמה: דני ישראלי',
         labelPin: 'קוד אישי (4 ספרות)',
         btnContinue: 'המשך לטופס',
         btnContinueLoading: 'טוען...',
         greetingText: 'שלום',
-        formSubtitle: 'ניתן לעדכן או לבטל את ההגעה בכל עת — פשוט היכנסו שוב עם אותו שם וקוד',
+        formSubtitle: 'ניתן לעדכן או לבטל את ההגעה בכל עת',
         lastUpdatedPrefix: 'עודכן לאחרונה: ',
         btnSwitchUser: 'החלף משתמש',
         labelAttendance: 'האם תגיעו לחגוג איתנו?',
@@ -276,14 +280,14 @@
         labelPartySize: 'מגיעים לבד או עם פלוס 1?',
         partySolo: '👤 לבד (1)',
         partyPlusOne: '👥 עם +1 (2)',
-        labelDishCategory: 'מה תביאו לארוחה?',
+        labelDishesHeading: 'מה תביאו לארוחה?',
+        btnAddDish: '➕ הוסף מנה נוספת',
         catStarter: '🥗 מנה ראשונה / סלט',
         catMain: '🍲 מנה עיקרית',
         catSide: '🍚 תוספת',
         catDessert: '🍰 קינוח / עוגה',
         catOther: '🥨 נשנוש / אחר',
-        labelDishDetails: 'פירוט המנה (מלל חופשי):',
-        dishPlaceholder: 'למשל: סלט חגיגי עם רימונים ותפוחים',
+        dishPlaceholder: 'תיאור המנה (למשל: סלט חגיגי עם רימונים ותפוחים)',
         labelDietary: 'הגבלות תזונה / אלרגיות (רשות)',
         dietaryPlaceholder: 'למשל: צמחוני, ללא גלוטן, אלרגיה לאגוזים',
         labelAlcoholSection: 'שתייה והעדפות 🍷',
@@ -303,7 +307,7 @@
         statTotalGuests: 'סך רשומים',
         statAttending: 'מאשרים (עם +1)',
         statDeclined: 'לא מגיעים',
-        hostSearchPlaceholder: 'חיפוש לפי שם...',
+        hostSearchPlaceholder: 'חיפוש לפי שם או מנה...',
         filterAll: 'כל הקטגוריות',
         hostDishesTitle: '🍽️ חלוקת מנות',
         hostDietaryTitle: '🥗 הגבלות תזונה',
@@ -320,14 +324,14 @@
         appTitle: 'Rosh Hashana Dinner 2026',
         hostBtnText: 'Host View',
         loginTitle: 'Welcome!',
-        loginSubtitle: 'Enter your name and a 4-digit PIN:',
+        loginSubtitle: 'Enter your name and a 4-digit PIN (to sign in or edit later):',
         labelName: 'Full Name',
         namePlaceholder: 'e.g. Alex Cohen',
         labelPin: 'Personal PIN (4 digits)',
         btnContinue: 'Continue to RSVP',
         btnContinueLoading: 'Loading...',
         greetingText: 'Hello',
-        formSubtitle: 'You can update or cancel your RSVP anytime — just log back in with the same name and PIN',
+        formSubtitle: 'You can update or cancel your RSVP anytime',
         lastUpdatedPrefix: 'Last updated: ',
         btnSwitchUser: 'Switch user',
         labelAttendance: 'Will you join the dinner?',
@@ -337,14 +341,14 @@
         labelPartySize: 'Coming alone or +1?',
         partySolo: '👤 Solo (1)',
         partyPlusOne: '👥 With +1 (2)',
-        labelDishCategory: 'What dish will you bring?',
+        labelDishesHeading: 'What dish will you bring?',
+        btnAddDish: '➕ Add another dish',
         catStarter: '🥗 Appetizer / Salad',
         catMain: '🍲 Main Course',
         catSide: '🍚 Side Dish',
         catDessert: '🍰 Dessert / Cake',
         catOther: '🥨 Snacks / Other',
-        labelDishDetails: 'Dish details (free text):',
-        dishPlaceholder: 'e.g., Pomegranate salad with pecans',
+        dishPlaceholder: 'Dish description (e.g., Pomegranate salad with pecans)',
         labelDietary: 'Dietary restrictions / allergies (optional)',
         dietaryPlaceholder: 'e.g., Vegetarian, gluten-free, nut allergy',
         labelAlcoholSection: 'Drinks & Preferences 🍷',
@@ -364,7 +368,7 @@
         statTotalGuests: 'Total Registered',
         statAttending: 'Attending (+1s)',
         statDeclined: 'Declined',
-        hostSearchPlaceholder: 'Search by name...',
+        hostSearchPlaceholder: 'Search by name or dish...',
         filterAll: 'All categories',
         hostDishesTitle: '🍽️ Dishes',
         hostDietaryTitle: '🥗 Dietary Restrictions',
@@ -385,6 +389,7 @@
     let allDishes = [];
     let allDrinks = [];
     let allDietary = [];
+    let lastLoadedUpdatedAt = null;
 
     function escapeHtml(str) {
       if (str === null || str === undefined) return '';
@@ -432,9 +437,8 @@
       document.getElementById('labelPartySize').innerText = t.labelPartySize;
       document.getElementById('partySolo').innerText = t.partySolo;
       document.getElementById('partyPlusOne').innerText = t.partyPlusOne;
-      document.getElementById('labelDishCategory').innerText = t.labelDishCategory;
-      document.getElementById('labelDishDetails').innerText = t.labelDishDetails;
-      document.getElementById('dishDescription').placeholder = t.dishPlaceholder;
+      document.getElementById('labelDishesHeading').innerText = t.labelDishesHeading;
+      document.getElementById('btnAddDish').innerText = t.btnAddDish;
       document.getElementById('labelDietary').innerText = t.labelDietary;
       document.getElementById('dietaryRestrictions').placeholder = t.dietaryPlaceholder;
       document.getElementById('labelAlcoholSection').innerText = t.labelAlcoholSection;
@@ -461,12 +465,17 @@
       document.getElementById('hostDietaryTitle').innerText = t.hostDietaryTitle;
       document.getElementById('hostDrinksTitle').innerText = t.hostDrinksTitle;
 
-      const select = document.getElementById('dishCategory');
-      select.options[0].text = t.catStarter;
-      select.options[1].text = t.catMain;
-      select.options[2].text = t.catSide;
-      select.options[3].text = t.catDessert;
-      select.options[4].text = t.catOther;
+      // Update all existing dish category dropdown options
+      document.querySelectorAll('.dish-category-select').forEach(select => {
+        select.options[0].text = t.catStarter;
+        select.options[1].text = t.catMain;
+        select.options[2].text = t.catSide;
+        select.options[3].text = t.catDessert;
+        select.options[4].text = t.catOther;
+      });
+      document.querySelectorAll('.dish-desc-input').forEach(input => {
+        input.placeholder = t.dishPlaceholder;
+      });
     }
 
     function setLoading(btn, textEl, isLoading, loadingText, normalText) {
@@ -477,8 +486,6 @@
         textEl.innerText = normalText;
       }
     }
-
-    let lastLoadedUpdatedAt = null;
 
     function updateLastUpdatedText() {
       const el = document.getElementById('lastUpdatedText');
@@ -492,15 +499,87 @@
       el.classList.remove('hidden');
     }
 
+    // Dynamic Dish Rows
+    function addDishRow(category = 'starter', description = '') {
+      const container = document.getElementById('dishesInputContainer');
+      const t = i18n[currentLang];
+      const rowId = 'dish_row_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+
+      const div = document.createElement('div');
+      div.id = rowId;
+      div.className = "dish-item-row p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 relative";
+      div.innerHTML = `
+        <div class="flex items-center gap-2">
+          <select class="dish-category-select flex-1 px-3 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm bg-white font-medium">
+            <option value="starter" ${category === 'starter' ? 'selected' : ''}>${t.catStarter}</option>
+            <option value="main" ${category === 'main' ? 'selected' : ''}>${t.catMain}</option>
+            <option value="side" ${category === 'side' ? 'selected' : ''}>${t.catSide}</option>
+            <option value="dessert" ${category === 'dessert' ? 'selected' : ''}>${t.catDessert}</option>
+            <option value="other" ${category === 'other' ? 'selected' : ''}>${t.catOther}</option>
+          </select>
+          <button type="button" onclick="removeDishRow('${rowId}')" title="מחק מנה" class="text-slate-400 hover:text-red-500 p-1.5 transition text-base">
+            🗑️
+          </button>
+        </div>
+        <input type="text" value="${escapeHtml(description)}" placeholder="${t.dishPlaceholder}" class="dish-desc-input w-full px-3 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm bg-white">
+      `;
+      container.appendChild(div);
+    }
+
+    function removeDishRow(rowId) {
+      const row = document.getElementById(rowId);
+      if (row) row.remove();
+      // Ensure at least one empty row remains
+      const container = document.getElementById('dishesInputContainer');
+      if (container.querySelectorAll('.dish-item-row').length === 0) {
+        addDishRow();
+      }
+    }
+
+    function getDishesPayload() {
+      const dishes = [];
+      const rows = document.querySelectorAll('.dish-item-row');
+      rows.forEach(row => {
+        const cat = row.querySelector('.dish-category-select').value;
+        const desc = row.querySelector('.dish-desc-input').value.trim();
+        if (desc) {
+          dishes.push({ category: cat, description: desc });
+        }
+      });
+      return dishes;
+    }
+
+    // Auto-login from LocalStorage
+    function checkStoredAuth() {
+      const savedAuth = localStorage.getItem('rh_dinner_guest_auth');
+      if (savedAuth) {
+        try {
+          const parsed = JSON.parse(savedAuth);
+          if (parsed && parsed.name && parsed.pin) {
+            document.getElementById('guestName').value = parsed.name;
+            document.getElementById('guestPin').value = parsed.pin;
+            executeAuth(parsed.name, parsed.pin);
+          }
+        } catch(e) {
+          localStorage.removeItem('rh_dinner_guest_auth');
+        }
+      }
+    }
+
     async function handleAuthSubmit(e) {
       e.preventDefault();
       const rawName = document.getElementById('guestName').value.trim();
       const pin = document.getElementById('guestPin').value.trim();
-
       if (!rawName || pin.length !== 4) return;
+      await executeAuth(rawName, pin);
+    }
 
+    async function executeAuth(rawName, pin) {
       const userId = `${rawName.toLowerCase().replace(/\s+/g, '_')}_${pin}`;
       activeUser = { name: rawName, pin: pin, id: userId };
+
+      // Store credentials locally for future visits
+      localStorage.setItem('rh_dinner_guest_auth', JSON.stringify({ name: rawName, pin: pin }));
 
       const btn = document.getElementById('btnContinue');
       const btnText = document.getElementById('btnContinueText');
@@ -514,6 +593,8 @@
         document.getElementById('currentGuestName').innerText = rawName;
         document.getElementById('authStep').classList.add('hidden');
         document.getElementById('rsvpStep').classList.remove('hidden');
+
+        document.getElementById('dishesInputContainer').innerHTML = '';
 
         if (docSnap.exists()) {
           const data = docSnap.data();
@@ -533,9 +614,13 @@
             document.querySelector('input[name="partySize"][value="1"]').checked = true;
           }
 
-          if (data.dish) {
-            document.getElementById('dishCategory').value = data.dish.category || 'starter';
-            document.getElementById('dishDescription').value = data.dish.description || '';
+          // Populate Dishes (supports new array format and legacy single object format)
+          if (Array.isArray(data.dishes) && data.dishes.length > 0) {
+            data.dishes.forEach(d => addDishRow(d.category, d.description));
+          } else if (data.dish && data.dish.description) {
+            addDishRow(data.dish.category, data.dish.description);
+          } else {
+            addDishRow();
           }
 
           document.getElementById('dietaryRestrictions').value = data.dietary || '';
@@ -549,8 +634,7 @@
           document.querySelector('input[name="attending"][value="yes"]').checked = true;
           toggleFormFields(true);
           document.querySelector('input[name="partySize"][value="1"]').checked = true;
-          document.getElementById('dishCategory').value = 'starter';
-          document.getElementById('dishDescription').value = '';
+          addDishRow();
           document.getElementById('dietaryRestrictions').value = '';
           document.getElementById('drinksAlcohol').checked = true;
           document.getElementById('softDrinkChoice').value = '';
@@ -567,10 +651,12 @@
     function logoutGuest() {
       activeUser = null;
       lastLoadedUpdatedAt = null;
+      localStorage.removeItem('rh_dinner_guest_auth');
       document.getElementById('rsvpStep').classList.add('hidden');
       document.getElementById('authStep').classList.remove('hidden');
       document.getElementById('saveStatus').classList.add('hidden');
       document.getElementById('saveError').classList.add('hidden');
+      document.getElementById('guestName').value = '';
       document.getElementById('guestPin').value = '';
     }
 
@@ -601,16 +687,14 @@
       const isAttending = document.querySelector('input[name="attending"]:checked').value === 'yes';
       const partySize = isAttending ? parseInt(document.querySelector('input[name="partySize"]:checked').value) : 0;
       const nowIso = new Date().toISOString();
+      const dishesList = isAttending ? getDishesPayload() : [];
 
       const payload = {
         name: activeUser.name,
         pin: activeUser.pin,
         attending: isAttending,
         partySize: partySize,
-        dish: isAttending ? {
-          category: document.getElementById('dishCategory').value,
-          description: document.getElementById('dishDescription').value.trim()
-        } : null,
+        dishes: dishesList,
         dietary: isAttending ? document.getElementById('dietaryRestrictions').value.trim() : '',
         alcohol: isAttending ? {
           drinksAlcohol: document.getElementById('drinksAlcohol').checked,
@@ -687,13 +771,26 @@
         const item = doc.data();
         if (item.attending) {
           attendingCount += (item.partySize || 1);
-          if (item.dish && item.dish.description) {
+          
+          // Support both new multi-dishes array and legacy single dish
+          if (Array.isArray(item.dishes)) {
+            item.dishes.forEach(d => {
+              if (d.description) {
+                allDishes.push({
+                  guest: item.name,
+                  category: d.category,
+                  description: d.description
+                });
+              }
+            });
+          } else if (item.dish && item.dish.description) {
             allDishes.push({
               guest: item.name,
               category: item.dish.category,
               description: item.dish.description
             });
           }
+
           if (item.dietary) {
             allDietary.push({ guest: item.name, note: item.dietary });
           }
@@ -722,14 +819,14 @@
       const categoryFilter = document.getElementById('hostCategoryFilter').value;
 
       const filteredDishes = allDishes.filter(d =>
-        (!searchTerm || d.guest.toLowerCase().includes(searchTerm)) &&
+        (!searchTerm || d.guest.toLowerCase().includes(searchTerm) || d.description.toLowerCase().includes(searchTerm)) &&
         (categoryFilter === 'all' || d.category === categoryFilter)
       );
       const filteredDrinks = allDrinks.filter(dr =>
-        !searchTerm || dr.guest.toLowerCase().includes(searchTerm)
+        !searchTerm || dr.guest.toLowerCase().includes(searchTerm) || dr.softDrink.toLowerCase().includes(searchTerm)
       );
       const filteredDietary = allDietary.filter(die =>
-        !searchTerm || die.guest.toLowerCase().includes(searchTerm)
+        !searchTerm || die.guest.toLowerCase().includes(searchTerm) || die.note.toLowerCase().includes(searchTerm)
       );
 
       const dishesContainer = document.getElementById('dishesList');
