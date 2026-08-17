@@ -214,7 +214,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.16.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.17.0</span></span>
   </footer>
 
   <!-- Confirmation Feedback Modal -->
@@ -362,6 +362,7 @@
         labelDishesHeading: 'מה תביאו לארוחה?',
         optionalTag: '(אופציונלי)',
         btnAddDish: '➕ הוסף מנה נוספת',
+        catSelectPlaceholder: '— בחרו סוג מנה —',
         catStarter: '🥗 מנה ראשונה / סלט',
         catMain: '🍲 מנה עיקרית',
         catSide: '🍚 תוספת',
@@ -375,16 +376,19 @@
         radioNoAlcohol: '🚫 לא שותה אלכוהול',
         labelSoftDrink: 'איזה שתייה קלה תעדיפו שנביא?',
         softDrinkPlaceholder: 'למשל: זירו, סודה, מיץ...',
-        btnSave: 'שמור אישור הגעה',
+        btnSaveFirstTime: 'שמור אישור הגעה',
+        btnSaveUpdate: 'עדכן פרטים',
         btnSaveLoading: 'שומר...',
         btnExitNoSave: 'עדיין לא החלטתי (יציאה ללא שמירה)',
         btnResetText: 'איפוס בחירה',
         resetConfirmPrompt: 'האם לאפס ולמחוק את התשובה שנשמרה? הטופס יתאפס ותוכלו לבחור מחדש או לצאת ללא שמירה.',
         resetSuccessToast: 'הבחירה אופסה והוסרה מהמערכת בהצלחה 🔄',
-        savedSuccess: 'הנתונים נשמרו בהצלחה! 🍯',
+        savedSuccessFirstTime: 'הנתונים נשמרו בהצלחה! 🍯',
+        savedSuccessUpdate: 'הפרטים עודכנו בהצלחה! 👍',
         saveErrorText: 'שגיאה בשמירה, נסו שוב.',
         validationAttendanceRequired: 'לא נבחר סטטוס הגעה. אנא סמנו האם תגיעו לחגוג איתנו, או לחצו על "עדיין לא החלטתי".',
         validationDetailsRequired: 'אנא סמנו האם אתם מגיעים לבד/עם פלוס 1, והעדפת שתייה.',
+        validationDishDescriptionRequired: 'בחרתם סוג מנה — אנא רשמו תיאור קצר עבור המארח.',
         modalAttendingTitle: 'איזה כיף! 🎉',
         modalAttendingMsg: 'שמחים מאוד לחגוג איתכם את ראש השנה! 🍯🍎 שתהיה שנה מתוקה וטובה.',
         modalDeclinedTitle: 'נתגעגע! 🥺',
@@ -441,6 +445,7 @@
         labelDishesHeading: 'What dish will you bring?',
         optionalTag: '(optional)',
         btnAddDish: '➕ Add another dish',
+        catSelectPlaceholder: '— Select dish type —',
         catStarter: '🥗 Appetizer / Salad',
         catMain: '🍲 Main Course',
         catSide: '🍚 Side Dish',
@@ -454,16 +459,19 @@
         radioNoAlcohol: '🚫 No alcohol',
         labelSoftDrink: 'What non-alcoholic drink would you like us to bring?',
         softDrinkPlaceholder: 'e.g., Diet Coke, Sparkling Water, Juice...',
-        btnSave: 'Save RSVP',
+        btnSaveFirstTime: 'Save RSVP',
+        btnSaveUpdate: 'Update Details',
         btnSaveLoading: 'Saving...',
         btnExitNoSave: 'Undecided yet (Exit without saving)',
         btnResetText: 'Reset RSVP',
         resetConfirmPrompt: 'Reset and delete your saved response? The form will clear and you can choose again or exit without saving.',
         resetSuccessToast: 'Response reset and removed from system 🔄',
-        savedSuccess: 'Saved successfully! 🍯',
+        savedSuccessFirstTime: 'Saved successfully! 🍯',
+        savedSuccessUpdate: 'Details updated successfully! 👍',
         saveErrorText: 'Failed to save, please try again.',
         validationAttendanceRequired: 'No RSVP selected. Please mark if you are attending or click "Undecided yet".',
         validationDetailsRequired: 'Please select party size and alcohol preference.',
+        validationDishDescriptionRequired: 'You selected a dish category — please add a short description.',
         modalAttendingTitle: 'Woohoo! 🎉',
         modalAttendingMsg: "We're so excited to celebrate Rosh Hashana with you! 🍯🍎 Wishing you a sweet new year.",
         modalDeclinedTitle: 'You will be missed! 🥺',
@@ -499,6 +507,8 @@
 
     let currentLang = 'he';
     let activeUser = null;
+    let isExistingRecord = false;
+    let previousAttendingStatus = null;
     const HOST_SECRET_PIN = "9999";
 
     let allGuests = [];
@@ -518,6 +528,12 @@
       const t = i18n[currentLang];
       const map = { starter: t.catStarter, main: t.catMain, side: t.catSide, dessert: t.catDessert, other: t.catOther };
       return map[category] || category;
+    }
+
+    function updateSaveButtonText() {
+      const t = i18n[currentLang];
+      const btnText = document.getElementById('btnSaveText');
+      btnText.innerText = isExistingRecord ? t.btnSaveUpdate : t.btnSaveFirstTime;
     }
 
     function toggleLanguage() {
@@ -562,7 +578,7 @@
       document.getElementById('radioNoAlcohol').innerText = t.radioNoAlcohol;
       document.getElementById('labelSoftDrink').innerHTML = `${t.labelSoftDrink} <span class="text-xs font-normal text-slate-400" id="tagDrinkOptional">${t.optionalTag}</span>`;
       document.getElementById('softDrinkChoice').placeholder = t.softDrinkPlaceholder;
-      document.getElementById('btnSaveText').innerText = t.btnSave;
+      updateSaveButtonText();
       document.getElementById('btnExitNoSave').innerText = t.btnExitNoSave;
       document.getElementById('btnResetText').innerText = t.btnResetText;
       document.getElementById('feedbackBtn').innerText = t.modalBtnOk;
@@ -587,11 +603,12 @@
       document.getElementById('hostDrinksTitle').innerText = t.hostDrinksTitle;
 
       document.querySelectorAll('.dish-category-select').forEach(select => {
-        select.options[0].text = t.catStarter;
-        select.options[1].text = t.catMain;
-        select.options[2].text = t.catSide;
-        select.options[3].text = t.catDessert;
-        select.options[4].text = t.catOther;
+        select.options[0].text = t.catSelectPlaceholder;
+        select.options[1].text = t.catStarter;
+        select.options[2].text = t.catMain;
+        select.options[3].text = t.catSide;
+        select.options[4].text = t.catDessert;
+        select.options[5].text = t.catOther;
       });
       document.querySelectorAll('.dish-desc-input').forEach(input => {
         input.placeholder = t.dishPlaceholder;
@@ -631,7 +648,7 @@
       el.classList.remove('hidden');
     }
 
-    function addDishRow(category = 'starter', description = '') {
+    function addDishRow(category = '', description = '') {
       const container = document.getElementById('dishesInputContainer');
       const t = i18n[currentLang];
       const rowId = 'dish_row_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
@@ -642,6 +659,7 @@
       div.innerHTML = `
         <div class="flex items-center gap-2">
           <select class="dish-category-select flex-1 px-3 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm bg-white font-medium">
+            <option value="" ${!category ? 'selected' : ''}>${t.catSelectPlaceholder}</option>
             <option value="starter" ${category === 'starter' ? 'selected' : ''}>${t.catStarter}</option>
             <option value="main" ${category === 'main' ? 'selected' : ''}>${t.catMain}</option>
             <option value="side" ${category === 'side' ? 'selected' : ''}>${t.catSide}</option>
@@ -668,15 +686,26 @@
 
     function getDishesPayload() {
       const dishes = [];
+      let hasValidationError = false;
       const rows = document.querySelectorAll('.dish-item-row');
+      
       rows.forEach(row => {
         const cat = row.querySelector('.dish-category-select').value;
         const desc = row.querySelector('.dish-desc-input').value.trim();
+        
+        if (cat && !desc) {
+          hasValidationError = true;
+          row.querySelector('.dish-desc-input').classList.add('border-rose-400', 'bg-rose-50');
+        } else {
+          row.querySelector('.dish-desc-input').classList.remove('border-rose-400', 'bg-rose-50');
+        }
+
         if (desc) {
-          dishes.push({ category: cat, description: desc });
+          dishes.push({ category: cat || 'other', description: desc });
         }
       });
-      return dishes;
+
+      return { dishes, hasValidationError };
     }
 
     function checkStoredAuth() {
@@ -727,9 +756,10 @@
 
         if (docSnap.exists()) {
           const data = docSnap.data();
+          isExistingRecord = true;
+          previousAttendingStatus = data.attending;
           lastLoadedUpdatedAt = data.updatedAt || null;
 
-          // Show reset button directly by attendance options
           document.getElementById('btnResetResponse').classList.remove('hidden');
 
           if (data.attending === false) {
@@ -765,7 +795,9 @@
             toggleAlcoholChoice(true);
           }
         } else {
-          // New Guest: Clean state with visible fields
+          // New Guest
+          isExistingRecord = false;
+          previousAttendingStatus = null;
           lastLoadedUpdatedAt = null;
           document.getElementById('btnResetResponse').classList.add('hidden');
 
@@ -780,6 +812,7 @@
           document.getElementById('softDrinkChoice').value = '';
           addDishRow();
         }
+        updateSaveButtonText();
         updateLastUpdatedText();
       } catch (err) {
         console.error("Error reading document:", err);
@@ -791,6 +824,8 @@
 
     function logoutGuest() {
       activeUser = null;
+      isExistingRecord = false;
+      previousAttendingStatus = null;
       lastLoadedUpdatedAt = null;
       localStorage.removeItem('rh_dinner_guest_auth');
       document.getElementById('rsvpStep').classList.add('hidden');
@@ -819,8 +854,10 @@
         const docRef = window.doc(window.db, "rsvps", activeUser.id);
         await window.deleteDoc(docRef);
 
-        // Reset state inside form without logging out
+        isExistingRecord = false;
+        previousAttendingStatus = null;
         lastLoadedUpdatedAt = null;
+        updateSaveButtonText();
         updateLastUpdatedText();
 
         document.getElementById('btnResetResponse').classList.add('hidden');
@@ -959,17 +996,23 @@
         softDrink = drinksAlcohol ? '' : document.getElementById('softDrinkChoice').value.trim();
       }
 
+      const { dishes, hasValidationError } = isAttending ? getDishesPayload() : { dishes: [], hasValidationError: false };
+      if (hasValidationError) {
+        errorEl.innerText = t.validationDishDescriptionRequired;
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
       const btn = document.getElementById('btnSave');
       const btnText = document.getElementById('btnSaveText');
       const nowIso = new Date().toISOString();
-      const dishesList = isAttending ? getDishesPayload() : [];
 
       const payload = {
         name: activeUser.name,
         pin: activeUser.pin,
         attending: isAttending,
         partySize: partySize,
-        dishes: dishesList,
+        dishes: dishes,
         dietary: isAttending ? document.getElementById('dietaryRestrictions').value.trim() : '',
         alcohol: isAttending ? {
           drinksAlcohol: drinksAlcohol,
@@ -978,28 +1021,39 @@
         updatedAt: nowIso
       };
 
-      setLoading(btn, btnText, true, t.btnSaveLoading, t.btnSave);
+      const isFirstTimeSubmission = !isExistingRecord;
+      const hasStatusChanged = isExistingRecord && (previousAttendingStatus !== isAttending);
+
+      setLoading(btn, btnText, true, t.btnSaveLoading, btnText.innerText);
 
       try {
         const docRef = window.doc(window.db, "rsvps", activeUser.id);
         await window.setDoc(docRef, payload);
 
+        isExistingRecord = true;
+        previousAttendingStatus = isAttending;
         lastLoadedUpdatedAt = nowIso;
+        updateSaveButtonText();
         updateLastUpdatedText();
 
         document.getElementById('btnResetResponse').classList.remove('hidden');
 
-        statusEl.innerText = t.savedSuccess;
-        statusEl.classList.remove('hidden');
-        setTimeout(() => statusEl.classList.add('hidden'), 4000);
-
-        triggerCelebration(isAttending);
+        if (isFirstTimeSubmission || hasStatusChanged) {
+          statusEl.innerText = t.savedSuccessFirstTime;
+          statusEl.classList.remove('hidden');
+          setTimeout(() => statusEl.classList.add('hidden'), 4000);
+          triggerCelebration(isAttending);
+        } else {
+          statusEl.innerText = t.savedSuccessUpdate;
+          statusEl.classList.remove('hidden');
+          setTimeout(() => statusEl.classList.add('hidden'), 3500);
+        }
       } catch (err) {
         console.error("Error saving:", err);
         errorEl.innerText = t.saveErrorText;
         errorEl.classList.remove('hidden');
       } finally {
-        setLoading(btn, btnText, false, t.btnSaveLoading, t.btnSave);
+        setLoading(btn, btnText, false, t.btnSaveLoading, isExistingRecord ? t.btnSaveUpdate : t.btnSaveFirstTime);
       }
     }
 
