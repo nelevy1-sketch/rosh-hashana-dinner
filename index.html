@@ -6,7 +6,7 @@
   <title>Rosh Hashana Dinner 2026 | ארוחת ראש השנה</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Canvas Confetti CDN for Celebrations -->
+  <!-- Canvas Confetti CDN -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -26,7 +26,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Custom Gentle Bounce */
     @keyframes popIn {
       0% { transform: scale(0.85); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
@@ -193,8 +192,14 @@
             <button type="submit" id="btnSave" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg text-lg disabled:opacity-60 disabled:cursor-not-allowed">
               <span id="btnSaveText">שמור אישור הגעה</span>
             </button>
-            <button type="button" onclick="exitWithoutSaving()" id="btnExitNoSave" class="w-full py-2.5 bg-slate-50 hover:bg-slate-100 active:scale-[0.99] text-slate-600 hover:text-slate-800 font-semibold rounded-xl transition-all border border-slate-200 hover:border-slate-300 shadow-sm text-sm flex items-center justify-center gap-1.5">
-              <span>עדיין לא החלטתי (יציאה ללא שמירה)</span>
+            
+            <button type="button" onclick="exitWithoutSaving()" id="btnExitNoSave" class="w-full py-2.5 bg-slate-50 hover:bg-slate-100 active:scale-[0.99] text-slate-600 hover:text-slate-800 font-semibold rounded-xl transition-all border border-slate-200 hover:border-slate-300 shadow-sm text-sm">
+              עדיין לא החלטתי (יציאה ללא שמירה)
+            </button>
+
+            <!-- Reset / Delete Response Button (Shown only to returning saved guests) -->
+            <button type="button" onclick="resetGuestResponse()" id="btnResetResponse" class="w-full py-2 bg-transparent hover:bg-rose-50 text-rose-600 hover:text-rose-700 font-semibold rounded-xl transition text-xs border border-transparent hover:border-rose-200 hidden">
+              🗑️ <span id="btnResetText">אפס ומחק את התשובה שלי מהמערכת</span>
             </button>
           </div>
 
@@ -207,10 +212,10 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.14.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.15.0</span></span>
   </footer>
 
-  <!-- Confirmation Feedback Modal (Celebration / Decline) -->
+  <!-- Confirmation Feedback Modal -->
   <div id="feedbackModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 sm:p-7 text-center shadow-2xl modal-pop border border-slate-100">
       <div id="feedbackEmoji" class="text-5xl sm:text-6xl mb-3">🎉</div>
@@ -301,7 +306,7 @@
   <!-- Firebase Modular SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCT7Olb7XztZl-rCQG-VCmWQ53GVCuNXU4",
@@ -319,6 +324,7 @@
     window.doc = doc;
     window.getDoc = getDoc;
     window.setDoc = setDoc;
+    window.deleteDoc = deleteDoc;
     window.collection = collection;
     window.getDocs = getDocs;
 
@@ -370,6 +376,9 @@
         btnSave: 'שמור אישור הגעה',
         btnSaveLoading: 'שומר...',
         btnExitNoSave: 'עדיין לא החלטתי (יציאה ללא שמירה)',
+        btnResetText: 'אפס ומחק את התשובה שלי מהמערכת',
+        resetConfirmPrompt: 'האם אתם בטוחים שברצונכם לאפס ולמחוק את התשובה שלכם מהמערכת? פעולה זו תחזיר אתכם למצב של אורח שטרם הגיב.',
+        resetSuccessToast: 'התשובה נמחקה בהצלחה מהמערכת.',
         savedSuccess: 'הנתונים נשמרו בהצלחה! 🍯',
         saveErrorText: 'שגיאה בשמירה, נסו שוב.',
         validationAttendanceRequired: 'לא נבחר סטטוס הגעה. אנא סמנו האם תגיעו לחגוג איתנו, או לחצו על "עדיין לא החלטתי".',
@@ -446,6 +455,9 @@
         btnSave: 'Save RSVP',
         btnSaveLoading: 'Saving...',
         btnExitNoSave: 'Undecided yet (Exit without saving)',
+        btnResetText: 'Reset and delete my response from the system',
+        resetConfirmPrompt: 'Are you sure you want to reset and delete your response? This will revert your status back to undecided.',
+        resetSuccessToast: 'Your response was deleted from the system.',
         savedSuccess: 'Saved successfully! 🍯',
         saveErrorText: 'Failed to save, please try again.',
         validationAttendanceRequired: 'No RSVP selected. Please mark if you are attending or click "Undecided yet".',
@@ -550,6 +562,7 @@
       document.getElementById('softDrinkChoice').placeholder = t.softDrinkPlaceholder;
       document.getElementById('btnSaveText').innerText = t.btnSave;
       document.getElementById('btnExitNoSave').innerText = t.btnExitNoSave;
+      document.getElementById('btnResetText').innerText = t.btnResetText;
       document.getElementById('feedbackBtn').innerText = t.modalBtnOk;
       document.getElementById('hostModalTitle').innerText = t.hostModalTitle;
       document.getElementById('hostPassPrompt').innerText = t.hostPassPrompt;
@@ -714,6 +727,9 @@
           const data = docSnap.data();
           lastLoadedUpdatedAt = data.updatedAt || null;
 
+          // Show reset button for existing saved records
+          document.getElementById('btnResetResponse').classList.remove('hidden');
+
           if (data.attending === false) {
             document.querySelector('input[name="attending"][value="no"]').checked = true;
             toggleFormFields(false);
@@ -747,8 +763,10 @@
             toggleAlcoholChoice(true);
           }
         } else {
-          // New Guest: Clean state with visible fields
+          // New Guest: Clean state with visible fields, hide reset button
           lastLoadedUpdatedAt = null;
+          document.getElementById('btnResetResponse').classList.add('hidden');
+
           document.querySelectorAll('input[name="attending"]').forEach(r => r.checked = false);
           document.querySelectorAll('input[name="partySize"]').forEach(r => r.checked = false);
           document.querySelectorAll('input[name="alcoholChoice"]').forEach(r => r.checked = false);
@@ -778,12 +796,32 @@
       document.getElementById('authStep').classList.remove('hidden');
       document.getElementById('saveStatus').classList.add('hidden');
       document.getElementById('saveError').classList.add('hidden');
+      document.getElementById('btnResetResponse').classList.add('hidden');
       document.getElementById('guestName').value = '';
       document.getElementById('guestPin').value = '';
     }
 
     function exitWithoutSaving() {
       logoutGuest();
+    }
+
+    async function resetGuestResponse() {
+      if (!activeUser) return;
+      const t = i18n[currentLang];
+
+      if (!confirm(t.resetConfirmPrompt)) {
+        return;
+      }
+
+      try {
+        const docRef = window.doc(window.db, "rsvps", activeUser.id);
+        await window.deleteDoc(docRef);
+        alert(t.resetSuccessToast);
+        logoutGuest();
+      } catch (err) {
+        console.error("Error deleting document:", err);
+        alert(t.saveErrorText);
+      }
     }
 
     function toggleFormFields(isAttending) {
@@ -805,7 +843,6 @@
       }
     }
 
-    // Modal and Animation triggers
     function triggerCelebration(isAttending) {
       const t = i18n[currentLang];
       const modal = document.getElementById('feedbackModal');
@@ -818,7 +855,6 @@
         titleEl.innerText = t.modalAttendingTitle;
         msgEl.innerText = t.modalAttendingMsg;
 
-        // Trigger Confetti
         if (typeof confetti === 'function') {
           confetti({
             particleCount: 80,
@@ -846,7 +882,6 @@
         titleEl.innerText = t.modalDeclinedTitle;
         msgEl.innerText = t.modalDeclinedMsg;
 
-        // Subtle gentle falling rain
         if (typeof confetti === 'function') {
           confetti({
             particleCount: 30,
@@ -930,11 +965,12 @@
         lastLoadedUpdatedAt = nowIso;
         updateLastUpdatedText();
 
+        document.getElementById('btnResetResponse').classList.remove('hidden');
+
         statusEl.innerText = t.savedSuccess;
         statusEl.classList.remove('hidden');
         setTimeout(() => statusEl.classList.add('hidden'), 4000);
 
-        // Trigger celebratory / witty decline experience
         triggerCelebration(isAttending);
       } catch (err) {
         console.error("Error saving:", err);
@@ -1047,12 +1083,10 @@
       const searchTerm = document.getElementById('hostSearchInput').value.trim().toLowerCase();
       const categoryFilter = document.getElementById('hostCategoryFilter').value;
 
-      // Filter Guests
       const filteredGuests = allGuests.filter(g =>
         !searchTerm || g.name.toLowerCase().includes(searchTerm)
       );
 
-      // Render Guests Full List
       const guestsContainer = document.getElementById('guestsFullList');
       if (allGuests.length === 0) {
         guestsContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4 bg-slate-50 rounded-xl border border-slate-200">${escapeHtml(t.noGuests)}</p>`;
@@ -1083,7 +1117,6 @@
         }).join('');
       }
 
-      // Filter Dishes
       const filteredDishes = allDishes.filter(d =>
         (!searchTerm || d.guest.toLowerCase().includes(searchTerm) || d.description.toLowerCase().includes(searchTerm)) &&
         (categoryFilter === 'all' || d.category === categoryFilter)
@@ -1095,7 +1128,6 @@
         !searchTerm || die.guest.toLowerCase().includes(searchTerm) || die.note.toLowerCase().includes(searchTerm)
       );
 
-      // Render Dishes
       const dishesContainer = document.getElementById('dishesList');
       if (allDishes.length === 0) {
         dishesContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4 bg-slate-50 rounded-xl border border-slate-200">${escapeHtml(t.noDishes)}</p>`;
@@ -1113,7 +1145,6 @@
         `).join('');
       }
 
-      // Render Dietary
       const dietaryContainer = document.getElementById('dietaryList');
       if (allDietary.length === 0) {
         dietaryContainer.innerHTML = `<p class="text-slate-400 italic text-center py-2">${escapeHtml(t.noDietary)}</p>`;
@@ -1128,7 +1159,6 @@
         `).join('');
       }
 
-      // Render Soft Drinks
       const drinksContainer = document.getElementById('drinksList');
       if (allDrinks.length === 0) {
         drinksContainer.innerHTML = `<p class="text-slate-400 italic text-center py-2">${escapeHtml(t.noDrinks)}</p>`;
