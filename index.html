@@ -92,12 +92,12 @@
         </div>
 
         <form onsubmit="handleFormSubmit(event)" class="space-y-6">
-          <!-- Attendance -->
+          <!-- Attendance (No Default Checked) -->
           <div>
-            <label id="labelAttendance" class="block text-sm font-semibold text-slate-700 mb-2">האם תגיעו לחגוג איתנו?</label>
+            <label id="labelAttendance" class="block text-sm font-semibold text-slate-700 mb-2">האם תגיעו לחגוג איתנו? <span class="text-amber-500">*</span></label>
             <div class="grid grid-cols-2 gap-3">
               <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
-                <input type="radio" name="attending" value="yes" checked onchange="toggleFormFields(true)" class="hidden">
+                <input type="radio" name="attending" value="yes" onchange="toggleFormFields(true)" class="hidden">
                 <span id="radioYes" class="font-bold text-slate-800 text-sm md:text-base">🎉 מגיע/ה</span>
               </label>
               <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
@@ -105,16 +105,17 @@
                 <span id="radioNo" class="font-bold text-slate-800 text-sm md:text-base">😢 לא מגיע/ה</span>
               </label>
             </div>
-            <p id="cancelHint" class="text-xs text-slate-400 mt-1.5 hidden">בחירה ב"לא מגיע/ה" ושמירה תבטל את ההגעה שלכם — ניתן לחזור ולשנות בכל רגע.</p>
+            <p id="cancelHint" class="text-xs text-slate-400 mt-1.5 hidden">בחירה ב"לא מגיע/ה" ושמירה תעדכן שלא תוכלו להגיע — ניתן לחזור ולשנות בכל רגע.</p>
           </div>
 
-          <div id="attendingFields" class="space-y-6">
+          <!-- Hidden until "Attending: Yes" is chosen -->
+          <div id="attendingFields" class="space-y-6 hidden">
             <!-- Party Size -->
             <div>
-              <label id="labelPartySize" class="block text-sm font-semibold text-slate-700 mb-2">מגיעים לבד או עם פלוס 1?</label>
+              <label id="labelPartySize" class="block text-sm font-semibold text-slate-700 mb-2">מגיעים לבד או עם פלוס 1? <span class="text-amber-500">*</span></label>
               <div class="grid grid-cols-2 gap-3">
                 <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
-                  <input type="radio" name="partySize" value="1" checked class="hidden">
+                  <input type="radio" name="partySize" value="1" class="hidden">
                   <span id="partySolo" class="font-semibold text-sm">👤 לבד (1)</span>
                 </label>
                 <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
@@ -145,10 +146,10 @@
 
             <!-- Alcohol & Soft Drinks -->
             <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-              <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">שתייה והעדפות 🍷</label>
+              <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">שתייה והעדפות 🍷 <span class="text-amber-500">*</span></label>
               <div class="grid grid-cols-2 gap-3">
                 <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
-                  <input type="radio" name="alcoholChoice" value="yes" checked onchange="toggleAlcoholChoice(true)" class="hidden">
+                  <input type="radio" name="alcoholChoice" value="yes" onchange="toggleAlcoholChoice(true)" class="hidden">
                   <span id="radioDrinksAlcohol" class="font-semibold text-sm">🍷 שותה אלכוהול</span>
                 </label>
                 <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
@@ -176,7 +177,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.7.1</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.8.0</span></span>
   </footer>
 
   <!-- Host Dashboard Modal -->
@@ -304,7 +305,7 @@
         labelAttendance: 'האם תגיעו לחגוג איתנו?',
         radioYes: '🎉 מגיע/ה',
         radioNo: '😢 לא מגיע/ה',
-        cancelHint: 'בחירה ב"לא מגיע/ה" ושמירה תבטל את ההגעה שלכם — ניתן לחזור ולשנות בכל רגע.',
+        cancelHint: 'בחירה ב"לא מגיע/ה" ושמירה תעדכן שלא תוכלו להגיע — ניתן לחזור ולשנות בכל רגע.',
         labelPartySize: 'מגיעים לבד או עם פלוס 1?',
         partySolo: '👤 לבד (1)',
         partyPlusOne: '👥 עם +1 (2)',
@@ -327,6 +328,8 @@
         btnSaveLoading: 'שומר...',
         savedSuccess: 'הנתונים נשמרו בהצלחה! 🍯',
         saveErrorText: 'שגיאה בשמירה, נסו שוב.',
+        validationAttendanceRequired: 'אנא בחרו האם תגיעו לחגוג איתנו, או סגרו את האפליקציה במידה ועדיין אינכם בטוחים.',
+        validationDetailsRequired: 'אנא סמנו האם אתם מגיעים לבד/עם פלוס 1, והעדפת שתייה.',
         hostModalTitle: '👑 דשבורד מארח',
         hostPassPrompt: 'הזן קוד גישה למארח:',
         hostPassPlaceholder: '••••',
@@ -371,7 +374,7 @@
         labelAttendance: 'Will you join the dinner?',
         radioYes: '🎉 Attending',
         radioNo: '😢 Not Attending',
-        cancelHint: 'Choosing "Not Attending" and saving will cancel your RSVP — you can change it back anytime.',
+        cancelHint: 'Choosing "Not Attending" and saving will update that you cannot make it — you can change it back anytime.',
         labelPartySize: 'Coming alone or +1?',
         partySolo: '👤 Solo (1)',
         partyPlusOne: '👥 With +1 (2)',
@@ -394,6 +397,8 @@
         btnSaveLoading: 'Saving...',
         savedSuccess: 'Saved successfully! 🍯',
         saveErrorText: 'Failed to save, please try again.',
+        validationAttendanceRequired: 'Please select if you are attending, or simply close the app if you are still undecided.',
+        validationDetailsRequired: 'Please select party size and alcohol preference.',
         hostModalTitle: '👑 Host Dashboard',
         hostPassPrompt: 'Enter host PIN:',
         hostPassPlaceholder: '••••',
@@ -684,14 +689,18 @@
             toggleAlcoholChoice(true);
           }
         } else {
+          // New Guest: Start clean with NO default checks
           lastLoadedUpdatedAt = null;
-          document.querySelector('input[name="attending"][value="yes"]').checked = true;
-          toggleFormFields(true);
-          document.querySelector('input[name="partySize"][value="1"]').checked = true;
-          addDishRow();
+          document.querySelectorAll('input[name="attending"]').forEach(r => r.checked = false);
+          document.querySelectorAll('input[name="partySize"]').forEach(r => r.checked = false);
+          document.querySelectorAll('input[name="alcoholChoice"]').forEach(r => r.checked = false);
+          
+          document.getElementById('attendingFields').classList.add('hidden');
+          document.getElementById('cancelHint').classList.add('hidden');
+          document.getElementById('nonAlcoholField').classList.add('hidden');
           document.getElementById('dietaryRestrictions').value = '';
-          document.querySelector('input[name="alcoholChoice"][value="yes"]').checked = true;
-          toggleAlcoholChoice(true);
+          document.getElementById('softDrinkChoice').value = '';
+          addDishRow();
         }
         updateLastUpdatedText();
       } catch (err) {
@@ -721,6 +730,14 @@
       if (isAttending) {
         fields.classList.remove('hidden');
         hint.classList.add('hidden');
+        // Default to solo and drinks alcohol if user hadn't selected anything yet
+        if (!document.querySelector('input[name="partySize"]:checked')) {
+          document.querySelector('input[name="partySize"][value="1"]').checked = true;
+        }
+        if (!document.querySelector('input[name="alcoholChoice"]:checked')) {
+          document.querySelector('input[name="alcoholChoice"][value="yes"]').checked = true;
+          toggleAlcoholChoice(true);
+        }
       } else {
         fields.classList.add('hidden');
         hint.classList.remove('hidden');
@@ -732,18 +749,40 @@
       if (!activeUser) return;
 
       const t = i18n[currentLang];
-      const btn = document.getElementById('btnSave');
-      const btnText = document.getElementById('btnSaveText');
       const statusEl = document.getElementById('saveStatus');
       const errorEl = document.getElementById('saveError');
       statusEl.classList.add('hidden');
       errorEl.classList.add('hidden');
 
-      const isAttending = document.querySelector('input[name="attending"]:checked').value === 'yes';
-      const partySize = isAttending ? parseInt(document.querySelector('input[name="partySize"]:checked').value) : 0;
+      const attendingChecked = document.querySelector('input[name="attending"]:checked');
+      if (!attendingChecked) {
+        errorEl.innerText = t.validationAttendanceRequired;
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      const isAttending = attendingChecked.value === 'yes';
+      let partySize = 0;
+      let drinksAlcohol = true;
+      let softDrink = '';
+
+      if (isAttending) {
+        const partyChecked = document.querySelector('input[name="partySize"]:checked');
+        const alcoholChecked = document.querySelector('input[name="alcoholChoice"]:checked');
+        if (!partyChecked || !alcoholChecked) {
+          errorEl.innerText = t.validationDetailsRequired;
+          errorEl.classList.remove('hidden');
+          return;
+        }
+        partySize = parseInt(partyChecked.value);
+        drinksAlcohol = alcoholChecked.value === 'yes';
+        softDrink = drinksAlcohol ? '' : document.getElementById('softDrinkChoice').value.trim();
+      }
+
+      const btn = document.getElementById('btnSave');
+      const btnText = document.getElementById('btnSaveText');
       const nowIso = new Date().toISOString();
       const dishesList = isAttending ? getDishesPayload() : [];
-      const drinksAlcohol = document.querySelector('input[name="alcoholChoice"]:checked').value === 'yes';
 
       const payload = {
         name: activeUser.name,
@@ -754,7 +793,7 @@
         dietary: isAttending ? document.getElementById('dietaryRestrictions').value.trim() : '',
         alcohol: isAttending ? {
           drinksAlcohol: drinksAlcohol,
-          preferredSoftDrink: drinksAlcohol ? '' : document.getElementById('softDrinkChoice').value.trim()
+          preferredSoftDrink: softDrink
         } : null,
         updatedAt: nowIso
       };
