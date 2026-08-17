@@ -46,7 +46,7 @@
         </div>
       </div>
 
-      <!-- Logged-in Guest Status Bar (Visible only in Step 2) -->
+      <!-- Logged-in Guest Status Bar -->
       <div id="stickyUserBar" class="hidden pt-2 mt-2 border-t border-slate-200 flex justify-between items-center gap-2">
         <div>
           <h2 class="text-xs sm:text-sm font-bold text-slate-900 leading-tight">
@@ -72,11 +72,11 @@
 
         <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
           <div>
-            <label id="labelName" class="block text-sm font-semibold text-slate-700 mb-1">שם מלא</label>
+            <label id="labelName" class="block text-sm font-semibold text-slate-700 mb-1">שם מלא <span class="text-rose-500 font-bold">*</span></label>
             <input type="text" id="guestName" required placeholder="לדוגמה: דני ישראלי" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base">
           </div>
           <div>
-            <label id="labelPin" class="block text-sm font-semibold text-slate-700 mb-1">קוד אישי (4 ספרות)</label>
+            <label id="labelPin" class="block text-sm font-semibold text-slate-700 mb-1">קוד אישי (4 ספרות) <span class="text-rose-500 font-bold">*</span></label>
             <input type="tel" id="guestPin" required pattern="[0-9]{4}" maxlength="4" inputmode="numeric" enterkeyhint="go" placeholder="••••" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-center tracking-widest text-lg font-bold text-base">
           </div>
           <button type="submit" id="btnContinue" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-base disabled:opacity-60 disabled:cursor-not-allowed">
@@ -88,13 +88,15 @@
       <!-- Step 2: RSVP & Potluck Details Form -->
       <div id="rsvpStep" class="hidden">
         <div class="mb-4">
-          <p id="formSubtitle" class="text-xs text-slate-400">ניתן לעדכן או לבטל את ההגעה בכל עת</p>
+          <p id="formSubtitle" class="text-xs text-slate-500">ניתן לעדכן או לבטל את ההגעה בכל עת. עדיין לא החלטתם? אפשר פשוט לצאת ולחזור מאוחר יותר.</p>
         </div>
 
         <form onsubmit="handleFormSubmit(event)" class="space-y-6">
-          <!-- Attendance -->
+          <!-- Attendance (Mandatory) -->
           <div>
-            <label id="labelAttendance" class="block text-sm font-semibold text-slate-700 mb-2">האם תגיעו לחגוג איתנו?</label>
+            <label id="labelAttendance" class="block text-sm font-semibold text-slate-700 mb-2">
+              האם תגיעו לחגוג איתנו? <span class="text-rose-500 font-bold">*</span>
+            </label>
             <div class="grid grid-cols-2 gap-3">
               <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
                 <input type="radio" name="attending" value="yes" onchange="toggleFormFields(true)" class="hidden">
@@ -110,9 +112,11 @@
 
           <!-- All Form Fields (Visible from start) -->
           <div id="attendingFields" class="space-y-6">
-            <!-- Party Size -->
+            <!-- Party Size (Mandatory if Attending) -->
             <div>
-              <label id="labelPartySize" class="block text-sm font-semibold text-slate-700 mb-2">מגיעים לבד או עם פלוס 1?</label>
+              <label id="labelPartySize" class="block text-sm font-semibold text-slate-700 mb-2">
+                מגיעים לבד או עם פלוס 1? <span class="text-rose-500 font-bold">*</span>
+              </label>
               <div class="grid grid-cols-2 gap-3">
                 <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
                   <input type="radio" name="partySize" value="1" class="hidden">
@@ -125,10 +129,12 @@
               </div>
             </div>
 
-            <!-- Dynamic Multi-Dishes Section -->
+            <!-- Dynamic Multi-Dishes Section (Optional) -->
             <div>
               <div class="flex justify-between items-center mb-2">
-                <label id="labelDishesHeading" class="block text-sm font-semibold text-slate-700">מה תביאו לארוחה? <span class="text-xs font-normal text-slate-400" id="tagDishesOptional">(אופציונלי)</span></label>
+                <label id="labelDishesHeading" class="block text-sm font-semibold text-slate-700">
+                  מה תביאו לארוחה? <span class="text-xs font-normal text-slate-400" id="tagDishesOptional">(אופציונלי)</span>
+                </label>
                 <button type="button" onclick="addDishRow()" id="btnAddDish" class="text-xs font-bold text-amber-600 hover:text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg transition">
                   ➕ הוסף מנה נוספת
                 </button>
@@ -138,15 +144,19 @@
               </div>
             </div>
 
-            <!-- Dietary Restrictions -->
+            <!-- Dietary Restrictions (Optional) -->
             <div>
-              <label id="labelDietary" class="block text-sm font-semibold text-slate-700 mb-1">הגבלות תזונה / אלרגיות <span class="text-xs font-normal text-slate-400" id="tagDietaryOptional">(אופציונלי)</span></label>
+              <label id="labelDietary" class="block text-sm font-semibold text-slate-700 mb-1">
+                הגבלות תזונה / אלרגיות <span class="text-xs font-normal text-slate-400" id="tagDietaryOptional">(אופציונלי)</span>
+              </label>
               <input type="text" id="dietaryRestrictions" placeholder="למשל: צמחוני, ללא גלוטן, אלרגיה לאגוזים" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base">
             </div>
 
-            <!-- Alcohol & Soft Drinks -->
+            <!-- Alcohol & Soft Drinks (Mandatory Choice, Optional Free Text) -->
             <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-              <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">שתייה והעדפות 🍷</label>
+              <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">
+                שתייה והעדפות 🍷 <span class="text-rose-500 font-bold">*</span>
+              </label>
               <div class="grid grid-cols-2 gap-3">
                 <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
                   <input type="radio" name="alcoholChoice" value="yes" onchange="toggleAlcoholChoice(true)" class="hidden">
@@ -159,15 +169,24 @@
               </div>
 
               <div id="nonAlcoholField" class="pt-2 border-t border-slate-200 hidden">
-                <label id="labelSoftDrink" class="block text-xs font-semibold text-slate-700 mb-1">איזה שתייה קלה תעדיפו שנביא? <span class="text-xs font-normal text-slate-400" id="tagDrinkOptional">(אופציונלי)</span></label>
+                <label id="labelSoftDrink" class="block text-xs font-semibold text-slate-700 mb-1">
+                  איזה שתייה קלה תעדיפו שנביא? <span class="text-xs font-normal text-slate-400" id="tagDrinkOptional">(אופציונלי)</span>
+                </label>
                 <input type="text" id="softDrinkChoice" placeholder="למשל: זירו, סודה, מיץ..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base bg-white">
               </div>
             </div>
           </div>
 
-          <button type="submit" id="btnSave" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-lg disabled:opacity-60 disabled:cursor-not-allowed">
-            <span id="btnSaveText">שמור אישור הגעה</span>
-          </button>
+          <!-- Actions -->
+          <div class="space-y-3 pt-2">
+            <button type="submit" id="btnSave" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-lg disabled:opacity-60 disabled:cursor-not-allowed">
+              <span id="btnSaveText">שמור אישור הגעה</span>
+            </button>
+            <button type="button" onclick="exitWithoutSaving()" id="btnExitNoSave" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl transition text-sm">
+              עדיין לא החלטתי (יציאה ללא שמירה)
+            </button>
+          </div>
+
           <p id="saveStatus" class="text-center text-sm font-semibold text-emerald-600 hidden"></p>
           <p id="saveError" class="text-center text-sm font-semibold text-red-600 hidden"></p>
         </form>
@@ -177,7 +196,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.10.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.12.0</span></span>
   </footer>
 
   <!-- Host Dashboard Modal -->
@@ -299,7 +318,7 @@
         btnContinue: 'המשך לטופס',
         btnContinueLoading: 'טוען...',
         greetingText: 'שלום',
-        formSubtitle: 'ניתן לעדכן או לבטל את ההגעה בכל עת',
+        formSubtitle: 'ניתן לעדכן או לבטל את ההגעה בכל עת. עדיין לא החלטתם? אפשר פשוט לצאת ולחזור מאוחר יותר.',
         lastUpdatedPrefix: 'עודכן לאחרונה: ',
         btnSwitchUser: 'החלף משתמש',
         labelAttendance: 'האם תגיעו לחגוג איתנו?',
@@ -327,9 +346,10 @@
         softDrinkPlaceholder: 'למשל: זירו, סודה, מיץ...',
         btnSave: 'שמור אישור הגעה',
         btnSaveLoading: 'שומר...',
+        btnExitNoSave: 'עדיין לא החלטתי (יציאה ללא שמירה)',
         savedSuccess: 'הנתונים נשמרו בהצלחה! 🍯',
         saveErrorText: 'שגיאה בשמירה, נסו שוב.',
-        validationAttendanceRequired: 'אנא בחרו האם תגיעו לחגוג איתנו, או סגרו את האפליקציה במידה ועדיין אינכם בטוחים.',
+        validationAttendanceRequired: 'לא נבחר סטטוס הגעה. אנא סמנו האם תגיעו לחגוג איתנו, או לחצו על "עדיין לא החלטתי".',
         validationDetailsRequired: 'אנא סמנו האם אתם מגיעים לבד/עם פלוס 1, והעדפת שתייה.',
         hostModalTitle: '👑 דשבורד מארח',
         hostPassPrompt: 'הזן קוד גישה למארח:',
@@ -369,7 +389,7 @@
         btnContinue: 'Continue to RSVP',
         btnContinueLoading: 'Loading...',
         greetingText: 'Hello',
-        formSubtitle: 'You can update or cancel your RSVP anytime',
+        formSubtitle: 'You can update or cancel your RSVP anytime. Still undecided? You can exit and return later.',
         lastUpdatedPrefix: 'Last updated: ',
         btnSwitchUser: 'Switch user',
         labelAttendance: 'Will you join the dinner?',
@@ -397,9 +417,10 @@
         softDrinkPlaceholder: 'e.g., Diet Coke, Sparkling Water, Juice...',
         btnSave: 'Save RSVP',
         btnSaveLoading: 'Saving...',
+        btnExitNoSave: 'Undecided yet (Exit without saving)',
         savedSuccess: 'Saved successfully! 🍯',
         saveErrorText: 'Failed to save, please try again.',
-        validationAttendanceRequired: 'Please select if you are attending, or simply close the app if you are still undecided.',
+        validationAttendanceRequired: 'No RSVP selected. Please mark if you are attending or click "Undecided yet".',
         validationDetailsRequired: 'Please select party size and alcohol preference.',
         hostModalTitle: '👑 Host Dashboard',
         hostPassPrompt: 'Enter host PIN:',
@@ -471,30 +492,31 @@
       document.getElementById('hostBtnText').innerText = t.hostBtnText;
       document.getElementById('loginTitle').innerText = t.loginTitle;
       document.getElementById('loginSubtitle').innerText = t.loginSubtitle;
-      document.getElementById('labelName').innerText = t.labelName;
+      document.getElementById('labelName').innerHTML = `${t.labelName} <span class="text-rose-500 font-bold">*</span>`;
       document.getElementById('guestName').placeholder = t.namePlaceholder;
-      document.getElementById('labelPin').innerText = t.labelPin;
+      document.getElementById('labelPin').innerHTML = `${t.labelPin} <span class="text-rose-500 font-bold">*</span>`;
       document.getElementById('btnContinueText').innerText = t.btnContinue;
       document.getElementById('greetingText').innerText = t.greetingText;
       document.getElementById('formSubtitle').innerText = t.formSubtitle;
       document.getElementById('btnSwitchUser').innerText = t.btnSwitchUser;
-      document.getElementById('labelAttendance').innerText = t.labelAttendance;
+      document.getElementById('labelAttendance').innerHTML = `${t.labelAttendance} <span class="text-rose-500 font-bold">*</span>`;
       document.getElementById('radioYes').innerText = t.radioYes;
       document.getElementById('radioNo').innerText = t.radioNo;
       document.getElementById('cancelHint').innerText = t.cancelHint;
-      document.getElementById('labelPartySize').innerText = t.labelPartySize;
+      document.getElementById('labelPartySize').innerHTML = `${t.labelPartySize} <span class="text-rose-500 font-bold">*</span>`;
       document.getElementById('partySolo').innerText = t.partySolo;
       document.getElementById('partyPlusOne').innerText = t.partyPlusOne;
       document.getElementById('labelDishesHeading').innerHTML = `${t.labelDishesHeading} <span class="text-xs font-normal text-slate-400" id="tagDishesOptional">${t.optionalTag}</span>`;
       document.getElementById('btnAddDish').innerText = t.btnAddDish;
       document.getElementById('labelDietary').innerHTML = `${t.labelDietary} <span class="text-xs font-normal text-slate-400" id="tagDietaryOptional">${t.optionalTag}</span>`;
       document.getElementById('dietaryRestrictions').placeholder = t.dietaryPlaceholder;
-      document.getElementById('labelAlcoholSection').innerText = t.labelAlcoholSection;
+      document.getElementById('labelAlcoholSection').innerHTML = `${t.labelAlcoholSection} <span class="text-rose-500 font-bold">*</span>`;
       document.getElementById('radioDrinksAlcohol').innerText = t.radioDrinksAlcohol;
       document.getElementById('radioNoAlcohol').innerText = t.radioNoAlcohol;
       document.getElementById('labelSoftDrink').innerHTML = `${t.labelSoftDrink} <span class="text-xs font-normal text-slate-400" id="tagDrinkOptional">${t.optionalTag}</span>`;
       document.getElementById('softDrinkChoice').placeholder = t.softDrinkPlaceholder;
       document.getElementById('btnSaveText').innerText = t.btnSave;
+      document.getElementById('btnExitNoSave').innerText = t.btnExitNoSave;
       document.getElementById('hostModalTitle').innerText = t.hostModalTitle;
       document.getElementById('hostPassPrompt').innerText = t.hostPassPrompt;
       document.getElementById('hostPassInput').placeholder = t.hostPassPlaceholder;
@@ -724,6 +746,10 @@
       document.getElementById('saveError').classList.add('hidden');
       document.getElementById('guestName').value = '';
       document.getElementById('guestPin').value = '';
+    }
+
+    function exitWithoutSaving() {
+      logoutGuest();
     }
 
     function toggleFormFields(isAttending) {
