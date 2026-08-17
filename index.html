@@ -92,9 +92,9 @@
         </div>
 
         <form onsubmit="handleFormSubmit(event)" class="space-y-6">
-          <!-- Attendance (No Default Checked) -->
+          <!-- Attendance -->
           <div>
-            <label id="labelAttendance" class="block text-sm font-semibold text-slate-700 mb-2">האם תגיעו לחגוג איתנו? <span class="text-amber-500">*</span></label>
+            <label id="labelAttendance" class="block text-sm font-semibold text-slate-700 mb-2">האם תגיעו לחגוג איתנו?</label>
             <div class="grid grid-cols-2 gap-3">
               <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
                 <input type="radio" name="attending" value="yes" onchange="toggleFormFields(true)" class="hidden">
@@ -112,7 +112,7 @@
           <div id="attendingFields" class="space-y-6">
             <!-- Party Size -->
             <div>
-              <label id="labelPartySize" class="block text-sm font-semibold text-slate-700 mb-2">מגיעים לבד או עם פלוס 1? <span class="text-amber-500">*</span></label>
+              <label id="labelPartySize" class="block text-sm font-semibold text-slate-700 mb-2">מגיעים לבד או עם פלוס 1?</label>
               <div class="grid grid-cols-2 gap-3">
                 <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
                   <input type="radio" name="partySize" value="1" class="hidden">
@@ -128,7 +128,7 @@
             <!-- Dynamic Multi-Dishes Section -->
             <div>
               <div class="flex justify-between items-center mb-2">
-                <label id="labelDishesHeading" class="block text-sm font-semibold text-slate-700">מה תביאו לארוחה?</label>
+                <label id="labelDishesHeading" class="block text-sm font-semibold text-slate-700">מה תביאו לארוחה? <span class="text-xs font-normal text-slate-400" id="tagDishesOptional">(אופציונלי)</span></label>
                 <button type="button" onclick="addDishRow()" id="btnAddDish" class="text-xs font-bold text-amber-600 hover:text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg transition">
                   ➕ הוסף מנה נוספת
                 </button>
@@ -140,13 +140,13 @@
 
             <!-- Dietary Restrictions -->
             <div>
-              <label id="labelDietary" class="block text-sm font-semibold text-slate-700 mb-1">הגבלות תזונה / אלרגיות (רשות)</label>
+              <label id="labelDietary" class="block text-sm font-semibold text-slate-700 mb-1">הגבלות תזונה / אלרגיות <span class="text-xs font-normal text-slate-400" id="tagDietaryOptional">(אופציונלי)</span></label>
               <input type="text" id="dietaryRestrictions" placeholder="למשל: צמחוני, ללא גלוטן, אלרגיה לאגוזים" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base">
             </div>
 
             <!-- Alcohol & Soft Drinks -->
             <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-              <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">שתייה והעדפות 🍷 <span class="text-amber-500">*</span></label>
+              <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">שתייה והעדפות 🍷</label>
               <div class="grid grid-cols-2 gap-3">
                 <label class="flex items-center justify-center p-3 border rounded-xl cursor-pointer transition border-slate-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
                   <input type="radio" name="alcoholChoice" value="yes" onchange="toggleAlcoholChoice(true)" class="hidden">
@@ -159,7 +159,7 @@
               </div>
 
               <div id="nonAlcoholField" class="pt-2 border-t border-slate-200 hidden">
-                <label id="labelSoftDrink" class="block text-xs font-semibold text-slate-700 mb-1">איזה שתייה קלה תעדיפו שנביא?</label>
+                <label id="labelSoftDrink" class="block text-xs font-semibold text-slate-700 mb-1">איזה שתייה קלה תעדיפו שנביא? <span class="text-xs font-normal text-slate-400" id="tagDrinkOptional">(אופציונלי)</span></label>
                 <input type="text" id="softDrinkChoice" placeholder="למשל: זירו, סודה, מיץ..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base bg-white">
               </div>
             </div>
@@ -177,7 +177,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.9.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.10.0</span></span>
   </footer>
 
   <!-- Host Dashboard Modal -->
@@ -310,6 +310,7 @@
         partySolo: '👤 לבד (1)',
         partyPlusOne: '👥 עם +1 (2)',
         labelDishesHeading: 'מה תביאו לארוחה?',
+        optionalTag: '(אופציונלי)',
         btnAddDish: '➕ הוסף מנה נוספת',
         catStarter: '🥗 מנה ראשונה / סלט',
         catMain: '🍲 מנה עיקרית',
@@ -317,7 +318,7 @@
         catDessert: '🍰 קינוח / עוגה',
         catOther: '🥨 נשנוש / אחר',
         dishPlaceholder: 'תיאור המנה (למשל: סלט חגיגי עם רימונים ותפוחים)',
-        labelDietary: 'הגבלות תזונה / אלרגיות (רשות)',
+        labelDietary: 'הגבלות תזונה / אלרגיות',
         dietaryPlaceholder: 'למשל: צמחוני, ללא גלוטן, אלרגיה לאגוזים',
         labelAlcoholSection: 'שתייה והעדפות 🍷',
         radioDrinksAlcohol: '🍷 שותה אלכוהול',
@@ -379,6 +380,7 @@
         partySolo: '👤 Solo (1)',
         partyPlusOne: '👥 With +1 (2)',
         labelDishesHeading: 'What dish will you bring?',
+        optionalTag: '(optional)',
         btnAddDish: '➕ Add another dish',
         catStarter: '🥗 Appetizer / Salad',
         catMain: '🍲 Main Course',
@@ -386,7 +388,7 @@
         catDessert: '🍰 Dessert / Cake',
         catOther: '🥨 Snacks / Other',
         dishPlaceholder: 'Dish description (e.g., Pomegranate salad with pecans)',
-        labelDietary: 'Dietary restrictions / allergies (optional)',
+        labelDietary: 'Dietary restrictions / allergies',
         dietaryPlaceholder: 'e.g., Vegetarian, gluten-free, nut allergy',
         labelAlcoholSection: 'Drinks & Preferences 🍷',
         radioDrinksAlcohol: '🍷 Drinks alcohol',
@@ -483,14 +485,14 @@
       document.getElementById('labelPartySize').innerText = t.labelPartySize;
       document.getElementById('partySolo').innerText = t.partySolo;
       document.getElementById('partyPlusOne').innerText = t.partyPlusOne;
-      document.getElementById('labelDishesHeading').innerText = t.labelDishesHeading;
+      document.getElementById('labelDishesHeading').innerHTML = `${t.labelDishesHeading} <span class="text-xs font-normal text-slate-400" id="tagDishesOptional">${t.optionalTag}</span>`;
       document.getElementById('btnAddDish').innerText = t.btnAddDish;
-      document.getElementById('labelDietary').innerText = t.labelDietary;
+      document.getElementById('labelDietary').innerHTML = `${t.labelDietary} <span class="text-xs font-normal text-slate-400" id="tagDietaryOptional">${t.optionalTag}</span>`;
       document.getElementById('dietaryRestrictions').placeholder = t.dietaryPlaceholder;
       document.getElementById('labelAlcoholSection').innerText = t.labelAlcoholSection;
       document.getElementById('radioDrinksAlcohol').innerText = t.radioDrinksAlcohol;
       document.getElementById('radioNoAlcohol').innerText = t.radioNoAlcohol;
-      document.getElementById('labelSoftDrink').innerText = t.labelSoftDrink;
+      document.getElementById('labelSoftDrink').innerHTML = `${t.labelSoftDrink} <span class="text-xs font-normal text-slate-400" id="tagDrinkOptional">${t.optionalTag}</span>`;
       document.getElementById('softDrinkChoice').placeholder = t.softDrinkPlaceholder;
       document.getElementById('btnSaveText').innerText = t.btnSave;
       document.getElementById('hostModalTitle').innerText = t.hostModalTitle;
@@ -689,7 +691,7 @@
             toggleAlcoholChoice(true);
           }
         } else {
-          // New Guest: Start clean with NO default checks, but form is VISIBLE
+          // New Guest: Clean state with visible fields
           lastLoadedUpdatedAt = null;
           document.querySelectorAll('input[name="attending"]').forEach(r => r.checked = false);
           document.querySelectorAll('input[name="partySize"]').forEach(r => r.checked = false);
@@ -730,6 +732,13 @@
       if (isAttending) {
         fields.classList.remove('hidden');
         hint.classList.add('hidden');
+        if (!document.querySelector('input[name="partySize"]:checked')) {
+          document.querySelector('input[name="partySize"][value="1"]').checked = true;
+        }
+        if (!document.querySelector('input[name="alcoholChoice"]:checked')) {
+          document.querySelector('input[name="alcoholChoice"][value="yes"]').checked = true;
+          toggleAlcoholChoice(true);
+        }
       } else {
         fields.classList.add('hidden');
         hint.classList.remove('hidden');
