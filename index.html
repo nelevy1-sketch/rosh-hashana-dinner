@@ -179,11 +179,11 @@
 
           <!-- Actions -->
           <div class="space-y-3 pt-2">
-            <button type="submit" id="btnSave" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-lg disabled:opacity-60 disabled:cursor-not-allowed">
+            <button type="submit" id="btnSave" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg text-lg disabled:opacity-60 disabled:cursor-not-allowed">
               <span id="btnSaveText">שמור אישור הגעה</span>
             </button>
-            <button type="button" onclick="exitWithoutSaving()" id="btnExitNoSave" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl transition text-sm">
-              עדיין לא החלטתי (יציאה ללא שמירה)
+            <button type="button" onclick="exitWithoutSaving()" id="btnExitNoSave" class="w-full py-2.5 bg-slate-50 hover:bg-slate-100 active:scale-[0.99] text-slate-600 hover:text-slate-800 font-semibold rounded-xl transition-all border border-slate-200 hover:border-slate-300 shadow-sm text-sm flex items-center justify-center gap-1.5">
+              <span>עדיין לא החלטתי (יציאה ללא שמירה)</span>
             </button>
           </div>
 
@@ -196,7 +196,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.12.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.13.0</span></span>
   </footer>
 
   <!-- Host Dashboard Modal -->
