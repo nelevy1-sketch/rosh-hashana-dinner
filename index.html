@@ -108,7 +108,7 @@
               <label id="labelAttendance" class="block text-sm font-semibold text-slate-700">
                 האם תגיעו לחגוג איתנו? <span class="text-rose-500 font-bold">*</span>
               </label>
-              <!-- Reset Button (Placed directly by attendance options, shown only if previously saved) -->
+              <!-- Reset Button -->
               <button type="button" onclick="resetGuestResponse()" id="btnResetResponse" class="text-xs text-rose-600 hover:text-rose-700 font-bold bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2 py-1 rounded-lg transition hidden flex items-center gap-1">
                 <span>🔄</span> <span id="btnResetText">איפוס בחירה</span>
               </button>
@@ -127,7 +127,7 @@
             <p id="cancelHint" class="text-xs text-slate-400 mt-1.5 hidden">בחירה ב"לא מגיע/ה" ושמירה תעדכן שלא תוכלו להגיע — ניתן לחזור ולשנות בכל רגע.</p>
           </div>
 
-          <!-- All Form Fields (Visible from start) -->
+          <!-- All Form Fields -->
           <div id="attendingFields" class="space-y-6">
             <!-- Party Size (Mandatory if Attending) -->
             <div>
@@ -157,7 +157,7 @@
                 </button>
               </div>
               <div id="dishesInputContainer" class="space-y-3">
-                <!-- Dynamic dish rows inserted here -->
+                <!-- Dynamic dish rows -->
               </div>
             </div>
 
@@ -169,7 +169,7 @@
               <input type="text" id="dietaryRestrictions" placeholder="למשל: צמחוני, ללא גלוטן, אלרגיה לאגוזים" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base">
             </div>
 
-            <!-- Alcohol & Soft Drinks (Mandatory Choice, Optional Free Text) -->
+            <!-- Alcohol & Soft Drinks -->
             <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
               <label id="labelAlcoholSection" class="block text-sm font-bold text-slate-800">
                 שתייה והעדפות 🍷 <span class="text-rose-500 font-bold">*</span>
@@ -214,7 +214,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.17.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.18.0</span></span>
   </footer>
 
   <!-- Confirmation Feedback Modal -->
@@ -226,6 +226,23 @@
       <button onclick="closeFeedbackModal()" id="feedbackBtn" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow-md text-base">
         מעולה, תודה!
       </button>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div id="resetConfirmModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 sm:p-7 text-center shadow-2xl modal-pop border border-slate-100">
+      <div class="text-5xl mb-3">🔄</div>
+      <h3 id="resetConfirmTitle" class="text-lg sm:text-xl font-extrabold text-slate-900 mb-2">איפוס אישור הגעה</h3>
+      <p id="resetConfirmPromptText" class="text-sm text-slate-600 mb-6 leading-relaxed"></p>
+      <div class="flex gap-3">
+        <button onclick="closeResetConfirmModal()" id="resetConfirmCancelBtn" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition text-sm">
+          ביטול
+        </button>
+        <button onclick="confirmResetGuestResponse()" id="resetConfirmDeleteBtn" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl transition shadow text-sm">
+          כן, אפס
+        </button>
+      </div>
     </div>
   </div>
 
@@ -369,6 +386,8 @@
         catDessert: '🍰 קינוח / עוגה',
         catOther: '🥨 נשנוש / אחר',
         dishPlaceholder: 'תיאור המנה (למשל: סלט חגיגי עם רימונים ותפוחים)',
+        deleteDishTooltip: 'מחק מנה',
+        maxDishesReached: 'ניתן להוסיף עד 5 מנות',
         labelDietary: 'הגבלות תזונה / אלרגיות',
         dietaryPlaceholder: 'למשל: צמחוני, ללא גלוטן, אלרגיה לאגוזים',
         labelAlcoholSection: 'שתייה והעדפות 🍷',
@@ -379,8 +398,12 @@
         btnSaveFirstTime: 'שמור אישור הגעה',
         btnSaveUpdate: 'עדכן פרטים',
         btnSaveLoading: 'שומר...',
-        btnExitNoSave: 'עדיין לא החלטתי (יציאה ללא שמירה)',
+        btnExitNoSaveNew: 'עדיין לא החלטתי (יציאה ללא שמירה)',
+        btnExitNoSaveExisting: 'יציאה ללא שמירת השינויים',
         btnResetText: 'איפוס בחירה',
+        resetConfirmTitle: 'איפוס אישור הגעה',
+        resetConfirmCancelBtn: 'ביטול',
+        resetConfirmDeleteBtn: 'כן, אפס',
         resetConfirmPrompt: 'האם לאפס ולמחוק את התשובה שנשמרה? הטופס יתאפס ותוכלו לבחור מחדש או לצאת ללא שמירה.',
         resetSuccessToast: 'הבחירה אופסה והוסרה מהמערכת בהצלחה 🔄',
         savedSuccessFirstTime: 'הנתונים נשמרו בהצלחה! 🍯',
@@ -452,6 +475,8 @@
         catDessert: '🍰 Dessert / Cake',
         catOther: '🥨 Snacks / Other',
         dishPlaceholder: 'Dish description (e.g., Pomegranate salad with pecans)',
+        deleteDishTooltip: 'Delete dish',
+        maxDishesReached: 'You can add up to 5 dishes',
         labelDietary: 'Dietary restrictions / allergies',
         dietaryPlaceholder: 'e.g., Vegetarian, gluten-free, nut allergy',
         labelAlcoholSection: 'Drinks & Preferences 🍷',
@@ -462,8 +487,12 @@
         btnSaveFirstTime: 'Save RSVP',
         btnSaveUpdate: 'Update Details',
         btnSaveLoading: 'Saving...',
-        btnExitNoSave: 'Undecided yet (Exit without saving)',
+        btnExitNoSaveNew: 'Undecided yet (Exit without saving)',
+        btnExitNoSaveExisting: 'Exit without saving changes',
         btnResetText: 'Reset RSVP',
+        resetConfirmTitle: 'Reset RSVP',
+        resetConfirmCancelBtn: 'Cancel',
+        resetConfirmDeleteBtn: 'Yes, reset',
         resetConfirmPrompt: 'Reset and delete your saved response? The form will clear and you can choose again or exit without saving.',
         resetSuccessToast: 'Response reset and removed from system 🔄',
         savedSuccessFirstTime: 'Saved successfully! 🍯',
@@ -536,6 +565,11 @@
       btnText.innerText = isExistingRecord ? t.btnSaveUpdate : t.btnSaveFirstTime;
     }
 
+    function updateExitButtonText() {
+      const t = i18n[currentLang];
+      document.getElementById('btnExitNoSave').innerText = isExistingRecord ? t.btnExitNoSaveExisting : t.btnExitNoSaveNew;
+    }
+
     function toggleLanguage() {
       currentLang = currentLang === 'he' ? 'en' : 'he';
       applyLanguage(currentLang);
@@ -579,8 +613,11 @@
       document.getElementById('labelSoftDrink').innerHTML = `${t.labelSoftDrink} <span class="text-xs font-normal text-slate-400" id="tagDrinkOptional">${t.optionalTag}</span>`;
       document.getElementById('softDrinkChoice').placeholder = t.softDrinkPlaceholder;
       updateSaveButtonText();
-      document.getElementById('btnExitNoSave').innerText = t.btnExitNoSave;
+      updateExitButtonText();
       document.getElementById('btnResetText').innerText = t.btnResetText;
+      document.getElementById('resetConfirmTitle').innerText = t.resetConfirmTitle;
+      document.getElementById('resetConfirmCancelBtn').innerText = t.resetConfirmCancelBtn;
+      document.getElementById('resetConfirmDeleteBtn').innerText = t.resetConfirmDeleteBtn;
       document.getElementById('feedbackBtn').innerText = t.modalBtnOk;
       document.getElementById('hostModalTitle').innerText = t.hostModalTitle;
       document.getElementById('hostPassPrompt').innerText = t.hostPassPrompt;
@@ -613,6 +650,10 @@
       document.querySelectorAll('.dish-desc-input').forEach(input => {
         input.placeholder = t.dishPlaceholder;
       });
+      document.querySelectorAll('.dish-delete-btn').forEach(btn => {
+        btn.title = t.deleteDishTooltip;
+      });
+      updateAddDishButtonState();
     }
 
     function toggleAlcoholChoice(drinksAlcohol) {
@@ -648,9 +689,17 @@
       el.classList.remove('hidden');
     }
 
+    const MAX_DISH_ROWS = 5;
+
     function addDishRow(category = '', description = '') {
       const container = document.getElementById('dishesInputContainer');
       const t = i18n[currentLang];
+
+      if (container.querySelectorAll('.dish-item-row').length >= MAX_DISH_ROWS) {
+        updateAddDishButtonState();
+        return;
+      }
+
       const rowId = 'dish_row_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
 
       const div = document.createElement('div');
@@ -666,13 +715,14 @@
             <option value="dessert" ${category === 'dessert' ? 'selected' : ''}>${t.catDessert}</option>
             <option value="other" ${category === 'other' ? 'selected' : ''}>${t.catOther}</option>
           </select>
-          <button type="button" onclick="removeDishRow('${rowId}')" title="מחק מנה" class="text-slate-400 hover:text-red-500 p-1.5 transition text-base">
+          <button type="button" onclick="removeDishRow('${rowId}')" title="${escapeHtml(t.deleteDishTooltip)}" class="dish-delete-btn text-slate-400 hover:text-red-500 p-1.5 transition text-base">
             🗑️
           </button>
         </div>
         <input type="text" value="${escapeHtml(description)}" placeholder="${t.dishPlaceholder}" class="dish-desc-input w-full px-3 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm bg-white">
       `;
       container.appendChild(div);
+      updateAddDishButtonState();
     }
 
     function removeDishRow(rowId) {
@@ -681,6 +731,23 @@
       const container = document.getElementById('dishesInputContainer');
       if (container.querySelectorAll('.dish-item-row').length === 0) {
         addDishRow();
+      }
+      updateAddDishButtonState();
+    }
+
+    function updateAddDishButtonState() {
+      const container = document.getElementById('dishesInputContainer');
+      const btn = document.getElementById('btnAddDish');
+      const count = container.querySelectorAll('.dish-item-row').length;
+      const t = i18n[currentLang];
+      if (count >= MAX_DISH_ROWS) {
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        btn.title = t.maxDishesReached;
+      } else {
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        btn.title = '';
       }
     }
 
@@ -813,6 +880,7 @@
           addDishRow();
         }
         updateSaveButtonText();
+        updateExitButtonText();
         updateLastUpdatedText();
       } catch (err) {
         console.error("Error reading document:", err);
@@ -839,16 +907,33 @@
     }
 
     function exitWithoutSaving() {
-      logoutGuest();
+      activeUser = null;
+      isExistingRecord = false;
+      previousAttendingStatus = null;
+      lastLoadedUpdatedAt = null;
+      document.getElementById('rsvpStep').classList.add('hidden');
+      document.getElementById('stickyUserBar').classList.add('hidden');
+      document.getElementById('authStep').classList.remove('hidden');
+      document.getElementById('saveStatus').classList.add('hidden');
+      document.getElementById('saveError').classList.add('hidden');
+      document.getElementById('btnResetResponse').classList.add('hidden');
     }
 
-    async function resetGuestResponse() {
+    function resetGuestResponse() {
       if (!activeUser) return;
       const t = i18n[currentLang];
+      document.getElementById('resetConfirmPromptText').innerText = t.resetConfirmPrompt;
+      document.getElementById('resetConfirmModal').classList.remove('hidden');
+    }
 
-      if (!confirm(t.resetConfirmPrompt)) {
-        return;
-      }
+    function closeResetConfirmModal() {
+      document.getElementById('resetConfirmModal').classList.add('hidden');
+    }
+
+    async function confirmResetGuestResponse() {
+      closeResetConfirmModal();
+      if (!activeUser) return;
+      const t = i18n[currentLang];
 
       try {
         const docRef = window.doc(window.db, "rsvps", activeUser.id);
@@ -858,6 +943,7 @@
         previousAttendingStatus = null;
         lastLoadedUpdatedAt = null;
         updateSaveButtonText();
+        updateExitButtonText();
         updateLastUpdatedText();
 
         document.getElementById('btnResetResponse').classList.add('hidden');
@@ -1034,6 +1120,7 @@
         previousAttendingStatus = isAttending;
         lastLoadedUpdatedAt = nowIso;
         updateSaveButtonText();
+        updateExitButtonText();
         updateLastUpdatedText();
 
         document.getElementById('btnResetResponse').classList.remove('hidden');
@@ -1179,7 +1266,7 @@
             badge = `<span class="text-xs px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 font-semibold">${escapeHtml(t.statusAttendingSolo)}</span>`;
           }
 
-          const timeFormatted = g.updatedAt ? new Date(g.updatedAt).toLocaleTimeString(currentLang === 'he' ? 'he-IL' : 'en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+          const timeFormatted = g.updatedAt ? new Date(g.updatedAt).toLocaleString(currentLang === 'he' ? 'he-IL' : 'en-GB', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
 
           return `
             <div class="p-3 bg-slate-50 border rounded-xl flex justify-between items-center gap-2">
