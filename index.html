@@ -6,7 +6,9 @@
   <title>Rosh Hashana Dinner 2026 | ארוחת ראש השנה</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti CDN for Celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Assistant', 'Inter', sans-serif;
@@ -23,6 +25,15 @@
       margin-inline-end: 0.4em;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Custom Gentle Bounce */
+    @keyframes popIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .modal-pop {
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col items-center justify-between pb-6">
@@ -196,8 +207,20 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.13.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.14.0</span></span>
   </footer>
+
+  <!-- Confirmation Feedback Modal (Celebration / Decline) -->
+  <div id="feedbackModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 sm:p-7 text-center shadow-2xl modal-pop border border-slate-100">
+      <div id="feedbackEmoji" class="text-5xl sm:text-6xl mb-3">🎉</div>
+      <h3 id="feedbackTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 mb-2">איזה כיף!</h3>
+      <p id="feedbackMessage" class="text-sm sm:text-base text-slate-600 mb-6 leading-relaxed">שמחים מאוד לחגוג איתכם את ראש השנה 🍯🍎</p>
+      <button onclick="closeFeedbackModal()" id="feedbackBtn" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow-md text-base">
+        מעולה, תודה!
+      </button>
+    </div>
+  </div>
 
   <!-- Host Dashboard Modal -->
   <div id="hostModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-2 sm:p-4 hidden">
@@ -351,6 +374,11 @@
         saveErrorText: 'שגיאה בשמירה, נסו שוב.',
         validationAttendanceRequired: 'לא נבחר סטטוס הגעה. אנא סמנו האם תגיעו לחגוג איתנו, או לחצו על "עדיין לא החלטתי".',
         validationDetailsRequired: 'אנא סמנו האם אתם מגיעים לבד/עם פלוס 1, והעדפת שתייה.',
+        modalAttendingTitle: 'איזה כיף! 🎉',
+        modalAttendingMsg: 'שמחים מאוד לחגוג איתכם את ראש השנה! 🍯🍎 שתהיה שנה מתוקה וטובה.',
+        modalDeclinedTitle: 'נתגעגע! 🥺',
+        modalDeclinedMsg: 'חבל שלא תוכלו להצטרף הפעם... נשמור לכם פרוסת תפוח בדבש לשנה הבאה! 🍏',
+        modalBtnOk: 'מעולה, תודה!',
         hostModalTitle: '👑 דשבורד מארח',
         hostPassPrompt: 'הזן קוד גישה למארח:',
         hostPassPlaceholder: '••••',
@@ -422,6 +450,11 @@
         saveErrorText: 'Failed to save, please try again.',
         validationAttendanceRequired: 'No RSVP selected. Please mark if you are attending or click "Undecided yet".',
         validationDetailsRequired: 'Please select party size and alcohol preference.',
+        modalAttendingTitle: 'Woohoo! 🎉',
+        modalAttendingMsg: "We're so excited to celebrate Rosh Hashana with you! 🍯🍎 Wishing you a sweet new year.",
+        modalDeclinedTitle: 'You will be missed! 🥺',
+        modalDeclinedMsg: "Sorry you can't make it this time... We'll save a slice of apple & honey for you next year! 🍏",
+        modalBtnOk: 'Great, thanks!',
         hostModalTitle: '👑 Host Dashboard',
         hostPassPrompt: 'Enter host PIN:',
         hostPassPlaceholder: '••••',
@@ -517,6 +550,7 @@
       document.getElementById('softDrinkChoice').placeholder = t.softDrinkPlaceholder;
       document.getElementById('btnSaveText').innerText = t.btnSave;
       document.getElementById('btnExitNoSave').innerText = t.btnExitNoSave;
+      document.getElementById('feedbackBtn').innerText = t.modalBtnOk;
       document.getElementById('hostModalTitle').innerText = t.hostModalTitle;
       document.getElementById('hostPassPrompt').innerText = t.hostPassPrompt;
       document.getElementById('hostPassInput').placeholder = t.hostPassPlaceholder;
@@ -771,6 +805,68 @@
       }
     }
 
+    // Modal and Animation triggers
+    function triggerCelebration(isAttending) {
+      const t = i18n[currentLang];
+      const modal = document.getElementById('feedbackModal');
+      const emojiEl = document.getElementById('feedbackEmoji');
+      const titleEl = document.getElementById('feedbackTitle');
+      const msgEl = document.getElementById('feedbackMessage');
+
+      if (isAttending) {
+        emojiEl.innerText = '🎉';
+        titleEl.innerText = t.modalAttendingTitle;
+        msgEl.innerText = t.modalAttendingMsg;
+
+        // Trigger Confetti
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 80,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#f59e0b', '#10b981', '#ef4444', '#3b82f6', '#ec4899']
+          });
+          setTimeout(() => {
+            confetti({
+              particleCount: 50,
+              angle: 60,
+              spread: 55,
+              origin: { x: 0 }
+            });
+            confetti({
+              particleCount: 50,
+              angle: 120,
+              spread: 55,
+              origin: { x: 1 }
+            });
+          }, 250);
+        }
+      } else {
+        emojiEl.innerText = '🍏🥺';
+        titleEl.innerText = t.modalDeclinedTitle;
+        msgEl.innerText = t.modalDeclinedMsg;
+
+        // Subtle gentle falling rain
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 30,
+            angle: 270,
+            spread: 45,
+            startVelocity: 15,
+            gravity: 0.8,
+            origin: { y: 0 },
+            colors: ['#94a3b8', '#cbd5e1']
+          });
+        }
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeFeedbackModal() {
+      document.getElementById('feedbackModal').classList.add('hidden');
+    }
+
     async function handleFormSubmit(e) {
       e.preventDefault();
       if (!activeUser) return;
@@ -837,6 +933,9 @@
         statusEl.innerText = t.savedSuccess;
         statusEl.classList.remove('hidden');
         setTimeout(() => statusEl.classList.add('hidden'), 4000);
+
+        // Trigger celebratory / witty decline experience
+        triggerCelebration(isAttending);
       } catch (err) {
         console.error("Error saving:", err);
         errorEl.innerText = t.saveErrorText;
