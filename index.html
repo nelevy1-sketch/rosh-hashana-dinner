@@ -108,8 +108,8 @@
             <p id="cancelHint" class="text-xs text-slate-400 mt-1.5 hidden">בחירה ב"לא מגיע/ה" ושמירה תעדכן שלא תוכלו להגיע — ניתן לחזור ולשנות בכל רגע.</p>
           </div>
 
-          <!-- Hidden until "Attending: Yes" is chosen -->
-          <div id="attendingFields" class="space-y-6 hidden">
+          <!-- All Form Fields (Visible from start) -->
+          <div id="attendingFields" class="space-y-6">
             <!-- Party Size -->
             <div>
               <label id="labelPartySize" class="block text-sm font-semibold text-slate-700 mb-2">מגיעים לבד או עם פלוס 1? <span class="text-amber-500">*</span></label>
@@ -177,7 +177,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.8.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.9.0</span></span>
   </footer>
 
   <!-- Host Dashboard Modal -->
@@ -689,13 +689,13 @@
             toggleAlcoholChoice(true);
           }
         } else {
-          // New Guest: Start clean with NO default checks
+          // New Guest: Start clean with NO default checks, but form is VISIBLE
           lastLoadedUpdatedAt = null;
           document.querySelectorAll('input[name="attending"]').forEach(r => r.checked = false);
           document.querySelectorAll('input[name="partySize"]').forEach(r => r.checked = false);
           document.querySelectorAll('input[name="alcoholChoice"]').forEach(r => r.checked = false);
           
-          document.getElementById('attendingFields').classList.add('hidden');
+          document.getElementById('attendingFields').classList.remove('hidden');
           document.getElementById('cancelHint').classList.add('hidden');
           document.getElementById('nonAlcoholField').classList.add('hidden');
           document.getElementById('dietaryRestrictions').value = '';
@@ -730,14 +730,6 @@
       if (isAttending) {
         fields.classList.remove('hidden');
         hint.classList.add('hidden');
-        // Default to solo and drinks alcohol if user hadn't selected anything yet
-        if (!document.querySelector('input[name="partySize"]:checked')) {
-          document.querySelector('input[name="partySize"][value="1"]').checked = true;
-        }
-        if (!document.querySelector('input[name="alcoholChoice"]:checked')) {
-          document.querySelector('input[name="alcoholChoice"][value="yes"]').checked = true;
-          toggleAlcoholChoice(true);
-        }
       } else {
         fields.classList.add('hidden');
         hint.classList.remove('hidden');
