@@ -214,7 +214,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.18.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.19.0</span></span>
   </footer>
 
   <!-- Confirmation Feedback Modal -->
@@ -222,7 +222,21 @@
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 sm:p-7 text-center shadow-2xl modal-pop border border-slate-100">
       <div id="feedbackEmoji" class="text-5xl sm:text-6xl mb-3">🎉</div>
       <h3 id="feedbackTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 mb-2">איזה כיף!</h3>
-      <p id="feedbackMessage" class="text-sm sm:text-base text-slate-600 mb-6 leading-relaxed">שמחים מאוד לחגוג איתכם את ראש השנה 🍯🍎</p>
+      <p id="feedbackMessage" class="text-sm sm:text-base text-slate-600 mb-5 leading-relaxed">שמחים מאוד לחגוג איתכם את ראש השנה 🍯🍎</p>
+
+      <!-- Calendar Section (Visible only when Attending) -->
+      <div id="calendarSection" class="hidden mb-5 pt-3 border-t border-slate-100">
+        <p class="text-xs font-bold text-slate-500 mb-2.5">📅 שמרו את המועד ביומן:</p>
+        <div class="grid grid-cols-2 gap-2">
+          <a id="btnGoogleCal" href="#" target="_blank" class="flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition shadow-sm">
+            <span>Google Calendar</span>
+          </a>
+          <button onclick="downloadICS()" id="btnAppleCal" class="flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition shadow-sm">
+            <span>Apple / ics</span>
+          </button>
+        </div>
+      </div>
+
       <button onclick="closeFeedbackModal()" id="feedbackBtn" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow-md text-base">
         מעולה, תודה!
       </button>
@@ -545,6 +559,52 @@
     let allDrinks = [];
     let allDietary = [];
     let lastLoadedUpdatedAt = null;
+
+    // Calendar Event Details (11 September 2026, 17:30 - 22:00 IDT / UTC+3 = 14:30 - 19:00 UTC)
+    const EVENT_DETAILS = {
+      title: 'Rosh Hashana Dinner 2026',
+      description: 'Doors open at 17:00, Dinner starts at 18:30. Happy Folsom!',
+      location: 'Rosh Hashana Dinner',
+      startUTC: '20260911T143000Z',
+      endUTC: '20260911T190000Z'
+    };
+
+    function getGoogleCalendarUrl() {
+      const base = "https://calendar.google.com/calendar/render?action=TEMPLATE";
+      const params = new URLSearchParams({
+        text: EVENT_DETAILS.title,
+        dates: `${EVENT_DETAILS.startUTC}/${EVENT_DETAILS.endUTC}`,
+        details: EVENT_DETAILS.description,
+        location: EVENT_DETAILS.location
+      });
+      return `${base}&${params.toString()}`;
+    }
+
+    function downloadICS() {
+      const icsContent = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Rosh Hashana Dinner 2026//EN",
+        "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        `SUMMARY:${EVENT_DETAILS.title}`,
+        `DESCRIPTION:${EVENT_DETAILS.description}`,
+        `LOCATION:${EVENT_DETAILS.location}`,
+        `DTSTART:${EVENT_DETAILS.startUTC}`,
+        `DTEND:${EVENT_DETAILS.endUTC}`,
+        "STATUS:CONFIRMED",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ].join("\r\n");
+
+      const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute("download", "rosh_hashana_dinner_2026.ics");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
 
     function escapeHtml(str) {
       if (str === null || str === undefined) return '';
@@ -994,11 +1054,16 @@
       const emojiEl = document.getElementById('feedbackEmoji');
       const titleEl = document.getElementById('feedbackTitle');
       const msgEl = document.getElementById('feedbackMessage');
+      const calSection = document.getElementById('calendarSection');
 
       if (isAttending) {
         emojiEl.innerText = '🎉';
         titleEl.innerText = t.modalAttendingTitle;
         msgEl.innerText = t.modalAttendingMsg;
+
+        // Configure Calendar Link
+        document.getElementById('btnGoogleCal').href = getGoogleCalendarUrl();
+        calSection.classList.remove('hidden');
 
         if (typeof confetti === 'function') {
           confetti({
@@ -1026,6 +1091,7 @@
         emojiEl.innerText = '🍏🥺';
         titleEl.innerText = t.modalDeclinedTitle;
         msgEl.innerText = t.modalDeclinedMsg;
+        calSection.classList.add('hidden');
 
         if (typeof confetti === 'function') {
           confetti({
