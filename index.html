@@ -88,7 +88,7 @@
           <div>
             <label id="labelPin" class="block text-sm font-semibold text-slate-700 mb-1">בחרו 4 ספרות לבחירתכם <span class="text-rose-500 font-bold">*</span></label>
             <input type="tel" id="guestPin" required pattern="[0-9]{4}" maxlength="4" inputmode="numeric" enterkeyhint="go" placeholder="למשל: 1234" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-center tracking-widest text-lg font-bold text-base">
-            <!-- Helpful Clarification Disclaimer -->
+            <!-- Clarification Disclaimer -->
             <div class="mt-2 p-2.5 bg-amber-50/70 border border-amber-200/70 rounded-xl flex items-start gap-2 text-xs text-amber-900 leading-normal">
               <span class="text-sm shrink-0">💡</span>
               <p id="pinDisclaimerText">זהו לא קוד שקיבלתם מראש — פשוט בחרו כל 4 ספרות שתרצו (כמו שנת לידה או קוד קל) שישמשו אתכם לחזרה לעדכון הטופס.</p>
@@ -219,7 +219,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.20.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.21.0</span></span>
   </footer>
 
   <!-- Confirmation Feedback Modal -->
@@ -229,9 +229,9 @@
       <h3 id="feedbackTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 mb-2">איזה כיף!</h3>
       <p id="feedbackMessage" class="text-sm sm:text-base text-slate-600 mb-5 leading-relaxed">שמחים מאוד לחגוג איתכם את ראש השנה 🍯🍎</p>
 
-      <!-- Calendar Section (Visible only when Attending) -->
+      <!-- Calendar Section (Berlin Timing: 17:30 - 22:00) -->
       <div id="calendarSection" class="hidden mb-5 pt-3 border-t border-slate-100">
-        <p class="text-xs font-bold text-slate-500 mb-2.5">📅 שמרו את המועד ביומן:</p>
+        <p class="text-xs font-bold text-slate-500 mb-2.5">📅 שמרו את המועד ביומן (שעון ברלין):</p>
         <div class="grid grid-cols-2 gap-2">
           <a id="btnGoogleCal" href="#" target="_blank" class="flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition shadow-sm">
             <span>Google Calendar</span>
@@ -569,13 +569,13 @@
     let allDietary = [];
     let lastLoadedUpdatedAt = null;
 
-    // Calendar Event Details (11 September 2026, 17:30 - 22:00 IDT / UTC+3 = 14:30 - 19:00 UTC)
+    // Calendar Event Details (Berlin, Germany: 11 September 2026, 17:30 - 22:00 CEST / UTC+2 = 15:30 - 20:00 UTC)
     const EVENT_DETAILS = {
       title: 'Rosh Hashana Dinner 2026',
-      description: 'Doors open at 17:00, Dinner starts at 18:30. Happy Folsom!',
-      location: 'Rosh Hashana Dinner',
-      startUTC: '20260911T143000Z',
-      endUTC: '20260911T190000Z'
+      description: 'Doors open at 17:30, Dinner starts at 18:30 (Berlin time). Happy Folsom!',
+      location: 'Berlin, Germany',
+      startUTC: '20260911T153000Z',
+      endUTC: '20260911T200000Z'
     };
 
     function getGoogleCalendarUrl() {
@@ -713,10 +713,10 @@
       document.querySelectorAll('.dish-category-select').forEach(select => {
         select.options[0].text = t.catSelectPlaceholder;
         select.options[1].text = t.catStarter;
-        select.options[2].text = t.catMain;
-        select.options[3].text = t.catSide;
-        select.options[4].text = t.catDessert;
-        select.options[5].text = t.catOther;
+        select.options[1].text = t.catMain;
+        select.options[2].text = t.catSide;
+        select.options[3].text = t.catDessert;
+        select.options[4].text = t.catOther;
       });
       document.querySelectorAll('.dish-desc-input').forEach(input => {
         input.placeholder = t.dishPlaceholder;
