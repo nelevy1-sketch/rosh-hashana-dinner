@@ -78,7 +78,7 @@
       <!-- Step 1: Login / Identifier Card -->
       <div id="authStep">
         <h2 id="loginTitle" class="text-lg font-bold text-slate-900 mb-1">ברוכים הבאים!</h2>
-        <p id="loginSubtitle" class="text-sm text-slate-500 mb-6">הזינו את שמכם וקוד בן 4 ספרות (לזיהוי ועריכה בעתיד):</p>
+        <p id="loginSubtitle" class="text-sm text-slate-500 mb-5 leading-relaxed">אין צורך בהרשמה מוקדמת — רשמו את שמכם ובחרו 4 ספרות כדי שתוכלו לערוך את הפרטים בהמשך:</p>
 
         <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
           <div>
@@ -86,8 +86,13 @@
             <input type="text" id="guestName" required placeholder="לדוגמה: דני ישראלי" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-base">
           </div>
           <div>
-            <label id="labelPin" class="block text-sm font-semibold text-slate-700 mb-1">קוד אישי (4 ספרות) <span class="text-rose-500 font-bold">*</span></label>
-            <input type="tel" id="guestPin" required pattern="[0-9]{4}" maxlength="4" inputmode="numeric" enterkeyhint="go" placeholder="••••" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-center tracking-widest text-lg font-bold text-base">
+            <label id="labelPin" class="block text-sm font-semibold text-slate-700 mb-1">בחרו 4 ספרות לבחירתכם <span class="text-rose-500 font-bold">*</span></label>
+            <input type="tel" id="guestPin" required pattern="[0-9]{4}" maxlength="4" inputmode="numeric" enterkeyhint="go" placeholder="למשל: 1234" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-center tracking-widest text-lg font-bold text-base">
+            <!-- Helpful Clarification Disclaimer -->
+            <div class="mt-2 p-2.5 bg-amber-50/70 border border-amber-200/70 rounded-xl flex items-start gap-2 text-xs text-amber-900 leading-normal">
+              <span class="text-sm shrink-0">💡</span>
+              <p id="pinDisclaimerText">זהו לא קוד שקיבלתם מראש — פשוט בחרו כל 4 ספרות שתרצו (כמו שנת לידה או קוד קל) שישמשו אתכם לחזרה לעדכון הטופס.</p>
+            </div>
           </div>
           <button type="submit" id="btnContinue" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow text-base disabled:opacity-60 disabled:cursor-not-allowed">
             <span id="btnContinueText">המשך לטופס</span>
@@ -214,7 +219,7 @@
 
   <!-- Footer with Version -->
   <footer class="mt-8 text-center text-xs text-slate-400">
-    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.19.0</span></span>
+    <span>Rosh Hashana Dinner App • <span class="font-mono font-medium text-slate-500">v1.20.0</span></span>
   </footer>
 
   <!-- Confirmation Feedback Modal -->
@@ -373,10 +378,12 @@
         appTitle: 'ארוחת ראש השנה 2026',
         hostBtnText: 'מארח',
         loginTitle: 'ברוכים הבאים!',
-        loginSubtitle: 'הזינו את שמכם וקוד בן 4 ספרות (לזיהוי ועריכה בעתיד):',
+        loginSubtitle: 'אין צורך בהרשמה מוקדמת — רשמו את שמכם ובחרו 4 ספרות כדי שתוכלו לערוך את הפרטים בהמשך:',
         labelName: 'שם מלא',
         namePlaceholder: 'לדוגמה: דני ישראלי',
-        labelPin: 'קוד אישי (4 ספרות)',
+        labelPin: 'בחרו 4 ספרות לבחירתכם',
+        pinPlaceholder: 'למשל: 1234',
+        pinDisclaimerText: 'זהו לא קוד שקיבלתם מראש — פשוט בחרו כל 4 ספרות שתרצו (כמו שנת לידה או קוד קל) שישמשו אתכם לחזרה לעדכון הטופס.',
         btnContinue: 'המשך לטופס',
         btnContinueLoading: 'טוען...',
         greetingText: 'שלום',
@@ -462,10 +469,12 @@
         appTitle: 'Rosh Hashana Dinner 2026',
         hostBtnText: 'Host View',
         loginTitle: 'Welcome!',
-        loginSubtitle: 'Enter your name and a 4-digit PIN (to sign in or edit later):',
+        loginSubtitle: 'No prior registration required — enter your name and choose 4 digits so you can edit details later:',
         labelName: 'Full Name',
         namePlaceholder: 'e.g. Alex Cohen',
-        labelPin: 'Personal PIN (4 digits)',
+        labelPin: 'Choose any 4 digits',
+        pinPlaceholder: 'e.g. 1234',
+        pinDisclaimerText: 'This is not a code you received from us — simply pick any 4 digits you will remember to sign back in and update.',
         btnContinue: 'Continue to RSVP',
         btnContinueLoading: 'Loading...',
         greetingText: 'Hello',
@@ -652,6 +661,8 @@
       document.getElementById('labelName').innerHTML = `${t.labelName} <span class="text-rose-500 font-bold">*</span>`;
       document.getElementById('guestName').placeholder = t.namePlaceholder;
       document.getElementById('labelPin').innerHTML = `${t.labelPin} <span class="text-rose-500 font-bold">*</span>`;
+      document.getElementById('guestPin').placeholder = t.pinPlaceholder;
+      document.getElementById('pinDisclaimerText').innerText = t.pinDisclaimerText;
       document.getElementById('btnContinueText').innerText = t.btnContinue;
       document.getElementById('greetingText').innerText = t.greetingText;
       document.getElementById('formSubtitle').innerText = t.formSubtitle;
